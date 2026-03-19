@@ -36,6 +36,6 @@ const userSchema = new mongoose.Schema({
 
 
 
-const Unuser = mongoose.models.Unuser mongoose.model('Unuser', userSchema);
+const Unuser = mongoose.models.Unuser || mongoose.model('Unuser', userSchema);
 
 export default Unuser

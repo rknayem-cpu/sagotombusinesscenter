@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+// Axios remove kora hoyeche
 import { Lock, Mail, Loader2, LogIn, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
@@ -20,18 +20,27 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Axios POST request to your login API
-      const response = await axios.post("/api/login", formData);
+      // Native Fetch API use kora hoyeche
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      if (response.status === 200) {
-        // Login success hole profile ba dashboard-e redirect
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login success hole profile-e redirect
         router.push("/profile");
-        router.refresh(); // Cookie updated thakay page refresh kora bhalo
+        router.refresh(); 
+      } else {
+        // Fetch-e error response manual dhorter hoy
+        setError(data.error || "Login failed. Please check your credentials.");
       }
     } catch (err: any) {
-      // Error handling
-      const errorMessage = err.response?.data?.error || "Login failed. Please check your credentials.";
-      setError(errorMessage);
+      setError("Something went wrong. Please check your internet connection.");
     } finally {
       setLoading(false);
     }

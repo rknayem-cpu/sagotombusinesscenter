@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
-import { ShieldCheck, Loader2, ArrowLeft, RefreshCcw } from "lucide-react";
+// Axios remove kora hoyeche
+import { ShieldCheck, Loader2, ArrowLeft } from "lucide-react";
 
 export default function VerifyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get("email"); 
-  // Registration page theke email ta neya
+  const email = searchParams.get("email");
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,16 +24,28 @@ export default function VerifyPage() {
     setMessage("");
 
     try {
-      const response = await axios.post("/api/verify", { otp });
+      // Axios er bodole native fetch use kora hoyeche
+      const response = await fetch("/api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ otp }),
+      });
 
-      if (response.status === 200) {
+      const data = await response.json();
+
+      if (response.ok) {
         setMessage("Verification successful! Redirecting...");
         setTimeout(() => {
           router.push("/login");
         }, 2000);
+      } else {
+        // Fetch logic: error response handling
+        setError(data.message || "Invalid OTP. Please try again.");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid OTP. Please try again.");
+      setError("Network error. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -43,7 +54,7 @@ export default function VerifyPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 p-4">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-white/50 backdrop-blur-sm">
-        
+
         {/* Icon & Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
@@ -96,14 +107,14 @@ export default function VerifyPage() {
 
         {/* Footer Actions */}
         <div className="mt-8 flex flex-col items-center space-y-4">
-          <button 
+          <button
             onClick={() => router.back()}
             className="flex items-center text-sm text-slate-500 hover:text-blue-600 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to registration
           </button>
-          
+
           <p className="text-xs text-slate-400">
             Didn't receive code? <span className="text-blue-600 cursor-pointer hover:underline font-medium">Resend Code</span>
           </p>

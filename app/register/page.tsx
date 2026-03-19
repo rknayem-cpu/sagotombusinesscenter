@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios"; // Axios import kora hoyeche
 import { Mail, Lock, User, MapPin, Loader2, ArrowRight } from "lucide-react";
 
 export default function RegisterPage() {
@@ -22,17 +21,26 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      // Axios POST request
-      const response = await axios.post("/api/register", formData);
+      // Native Fetch API use kora hoyeche
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      if (response.status === 200) {
-        // Success hole OTP page-e pathiye deya hobe
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success hole verify page-e redirect
         router.push(`/verify`);
+      } else {
+        // Error handling (Fetch-e response.ok check korte hoy)
+        setError(data.error || "Registration failed. Try again.");
       }
     } catch (err: any) {
-      // Axios error handling (response thakle shekhan theke error message neya)
-      const errorMessage = err.response?.data?.error || "Registration failed. Try again.";
-      setError(errorMessage);
+      setError("Something went wrong. Please check your connection.");
     } finally {
       setLoading(false);
     }
