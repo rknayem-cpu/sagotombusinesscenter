@@ -1,17 +1,41 @@
 "use client"
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Link from "next/link";
-import { IoMenu, IoClose, IoHomeOutline, IoBagHandleOutline, IoGridOutline, IoEllipsisHorizontalCircleOutline } from "react-icons/io5";
+import { IoMenu, IoClose, IoHomeOutline, IoBagHandleOutline, IoGridOutline, IoEllipsisHorizontalCircleOutline,IoPersonOutline,IoLogInOutline } from "react-icons/io5";
+
+import Cookies from "js-cookie";
+
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Browser theke 'userId' namer cookie check kora hocche
+    const userCookie = Cookies.get("userId");
+    if (userCookie) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const navItems = [
     { name: "হোম", href: "/", icon: <IoHomeOutline /> },
+    // Condition: Login thakle Profile, na thakle Login
+    isLoggedIn 
+      ? { name: "প্রোফাইল", href: "/profile", icon: <IoPersonOutline /> }
+      : { name: "লগইন", href: "/login", icon: <IoLogInOutline /> },
+    
     { name: "পন্য", href: "/register", icon: <IoBagHandleOutline /> },
     { name: "বিভাগ", href: "/categories", icon: <IoGridOutline /> },
     { name: "আরো", href: "/more", icon: <IoEllipsisHorizontalCircleOutline /> },
-  ];
+  ];  
+  
+  
+  
+  
+  
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
