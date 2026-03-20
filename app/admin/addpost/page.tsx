@@ -17,12 +17,12 @@ export default function AddProductPage() {
     category: ''
   });
 
-  const handleChange = (e:React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (e:any) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -154,7 +154,7 @@ export default function AddProductPage() {
             <textarea
               name="bio"
               required
-              rows="3"
+              rows={3}
               value={formData.bio}
               onChange={handleChange}
               placeholder="Describe the key features..."

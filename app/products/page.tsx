@@ -2,44 +2,76 @@
 
 import React, { useEffect, useState } from 'react';
 import { ShoppingCart, Loader2, PackageOpen } from 'lucide-react';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
+
+// 1. Product Interface define kora
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+  imgUrl: string;
+  category: string;
+  size: string;
+}
+
+// API response er structure jodi thake
+interface ApiResponse {
+  success: boolean;
+  data: Product[];
+}
 
 export default function ProductDisplayPage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [addingId, setAddingId] = useState(null);
+  // 2. States er sathe types assign kora
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [addingId, setAddingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/posts')
-      .then(res => res.json())
-      .then(res => res.success && setProducts(res.data))
-      .finally(() => setLoading(false));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('/api/posts');
+        const data: ApiResponse = await res.json();
+        if (data.success) {
+          setProducts(data.data);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  
-  
-  const handleAddToCart = async (productId, title) => {
-  try {
-    const response = await fetch(`/api/cart/${productId}`);
-    
-    if (response.ok) {
-      // --- Etai Jadu! ---
-      // Eta Navbar er CartIcon ke signal pathabe "Count update koro"
-      window.dispatchEvent(new Event('cartUpdated'));
+  // 3. Function parameters e type deya
+  const handleAddToCart = async (productId: string, title: string) => {
+    setAddingId(productId); // Loading state start
+    try {
+      const response = await fetch(`/api/cart/${productId}`);
 
-      // Tomar SweetAlert code...
-      Swal.fire({ title: 'Added!', icon: 'success' });
+      if (response.ok) {
+        // Navbar refresh signal
+        window.dispatchEvent(new Event('cartUpdated'));
+
+        Swal.fire({
+          title: 'Added!',
+          text: `${title} has been added to your bag.`,
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#fff',
+          color: '#0f172a',
+          iconColor: '#4f46e5'
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({ title: 'Error', text: 'Something went wrong!', icon: 'error' });
+    } finally {
+      setAddingId(null); // Loading state stop
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-  
-  
-  
-  
-  
+  };
 
   if (loading) return (
     <div className="min-h-screen grid place-items-center bg-white">
@@ -64,12 +96,12 @@ export default function ProductDisplayPage() {
           {products.map((p) => (
             <div key={p._id} className="group flex flex-col">
               <div className="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] bg-slate-50 border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10">
-                <img 
-                  src={p.imgUrl} 
-                  alt={p.title} 
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                <img
+                  src={p.imgUrl}
+                  alt={p.title}
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
-                <button 
+                <button
                   disabled={addingId === p._id}
                   onClick={() => handleAddToCart(p._id, p.title)}
                   className="absolute bottom-6 right-6 p-4 bg-white/90 backdrop-blur-md text-slate-900 rounded-2xl shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-indigo-600 hover:text-white disabled:opacity-50"
@@ -88,11 +120,12 @@ export default function ProductDisplayPage() {
                 </h3>
                 <div className="flex items-center justify-between border-t border-slate-50 pt-4">
                   <p className="text-2xl font-black text-slate-900">${p.price}</p>
-                  <button 
+                  <button
+                    disabled={addingId === p._id}
                     onClick={() => handleAddToCart(p._id, p.title)}
-                    className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-indigo-600 active:scale-90 transition-all shadow-md"
+                    className="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-indigo-600 active:scale-90 transition-all shadow-md disabled:bg-slate-400"
                   >
-                    Add Now
+                    {addingId === p._id ? "Adding..." : "Add Now"}
                   </button>
                 </div>
               </div>
