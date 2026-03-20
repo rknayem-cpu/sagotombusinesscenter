@@ -40,7 +40,7 @@ useEffect(() => {
       ? { name: "প্রোফাইল", href: "/profile", icon: <IoPersonOutline /> }
       : { name: "লগইন", href: "/login", icon: <IoLogInOutline /> },
     
-    { name: "পন্য", href: "/register", icon: <IoBagHandleOutline /> },
+    { name: "পন্য", href: "/products", icon: <IoBagHandleOutline /> },
     { name: "বিভাগ", href: "/categories", icon: <IoGridOutline /> },
     { name: "আরো", href: "/more", icon: <IoEllipsisHorizontalCircleOutline /> },
   ];  
