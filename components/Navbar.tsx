@@ -12,13 +12,26 @@ export default function Navbar() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    // Browser theke 'userId' namer cookie check kora hocche
-    const userCookie = Cookies.get("userId");
-    if (userCookie) {
-      setIsLoggedIn(true);
-    }
+
+
+useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth/check");
+        const data = await res.json();
+        setIsLoggedIn(data.isLoggedIn);
+      } catch (err) {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuth();
   }, []);
+
+
+
+
+
 
   const navItems = [
     { name: "হোম", href: "/", icon: <IoHomeOutline /> },
