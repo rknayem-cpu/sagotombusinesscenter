@@ -17,7 +17,7 @@ export default function AddProductPage() {
     category: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e:React.FormEvent<HTMLFormElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
