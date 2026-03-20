@@ -3,7 +3,7 @@ import Home from '@/components/Home';
 
 export default function Page(){
 return(
-<div class="w-full min-h-screen h-auto ">
+<div className="w-full min-h-screen h-auto ">
 
 <Home/>
 
