@@ -47,12 +47,11 @@ export default function ProfilePage() {
       // Logout API thakle sheta fetch diye call kora bhalo
       const res = await fetch("/api/logout", { method: "POST" });
       
-      window.dispatchEvent(new Event('authChange'));
       
       if (res.status === 200) {
       
       // Logout successful hobar por
-
+window.dispatchEvent(new Event('authChange'));
       
         router.push("/login");
       }
