@@ -33,6 +33,13 @@ export default function LoginPage() {
 
       if (response.ok) {
         // Login success hole profile-e redirect
+        
+        // Login successful hobar por
+window.dispatchEvent(new Event('authChange'));
+ // Ba jekhane pathate chan
+
+        
+        
         router.push("/profile");
         router.refresh(); 
       } else {

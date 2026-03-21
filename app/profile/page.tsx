@@ -47,6 +47,11 @@ export default function ProfilePage() {
       const res = await fetch("/api/logout", { method: "POST" });
       
       if (res.ok) {
+      
+      // Logout successful hobar por
+window.dispatchEvent(new Event('authChange'));
+
+      
         router.push("/login");
       }
     } catch (err) {

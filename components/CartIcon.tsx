@@ -30,16 +30,33 @@ export default function CartIcon() {
       console.error("Fetch error", err);
     }
   };
+  
+  
+  
+  
 
-  useEffect(() => {
-    checkAuthStatus();
-    fetchCartCount();
+useEffect(() => {
+  checkAuthStatus();
+  fetchCartCount();
 
-    const handleCartUpdate = () => fetchCartCount();
-    window.addEventListener('cartUpdated', handleCartUpdate);
+  const handleCartUpdate = () => fetchCartCount();
+  const handleAuthUpdate = () => checkAuthStatus(); // Auth status update function
 
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
-  }, []);
+  window.addEventListener('cartUpdated', handleCartUpdate);
+  window.addEventListener('authChange', handleAuthUpdate); // Event listen kora
+
+  return () => {
+    window.removeEventListener('cartUpdated', handleCartUpdate);
+    window.removeEventListener('authChange', handleAuthUpdate);
+  };
+}, []);
+
+
+
+
+
+
+
 
   // 3. Handle Navigation with Auth Check
   const handleCartClick = () => {
