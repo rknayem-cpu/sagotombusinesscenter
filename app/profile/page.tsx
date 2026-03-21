@@ -42,14 +42,16 @@ export default function ProfilePage() {
   }, [router]);
 
   const handleLogout = async () => {
+  
     try {
       // Logout API thakle sheta fetch diye call kora bhalo
       const res = await fetch("/api/logout", { method: "POST" });
       
-      if (res.ok) {
+      window.dispatchEvent(new Event('authChange'));
+      
+      if (res.status === 200) {
       
       // Logout successful hobar por
-window.dispatchEvent(new Event('authChange'));
 
       
         router.push("/login");

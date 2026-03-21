@@ -31,7 +31,7 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.status === 200) {
         // Login success hole profile-e redirect
         
         // Login successful hobar por
