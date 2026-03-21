@@ -42,7 +42,8 @@ export default function Navbar() {
   return (
     <>
       {/* --- Main Navbar --- */}
-      <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 h-16
+      <nav className="fixed top-0 left-0 w-full
+       flex justify-between items-center pl-6 pr-4 h-16
                       bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm z-50">
 
         {/* Logo */}
