@@ -48,7 +48,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/logout", { method: "POST" });
       
       
-      if (res.status === 200) {
+      if (res.ok) {
       
       // Logout successful hobar por
 window.dispatchEvent(new Event('authChange'));
@@ -57,7 +57,7 @@ window.dispatchEvent(new Event('authChange'));
       }
     } catch (err) {
       // Error holeo safety-r jonno login-e pathiye deya jay
-      router.push("/login");
+      router.push("/");
     }
   };
 
