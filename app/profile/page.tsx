@@ -154,6 +154,8 @@ export default function ProfilePage() {
                 </button>
                 <hr className="my-3 border-slate-100" />
                 <button
+                
+                 type="button" 
                   onClick={handleLogout}
                   className="w-full flex items-center p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all font-bold"
                 >
