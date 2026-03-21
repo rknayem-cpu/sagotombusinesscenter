@@ -18,7 +18,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+window.dispatchEvent(new Event('authChange'));
     try {
       // Native Fetch API use kora hoyeche
       const response = await fetch("/api/login", {
@@ -35,7 +35,6 @@ export default function LoginPage() {
         // Login success hole profile-e redirect
         
         // Login successful hobar por
-window.dispatchEvent(new Event('authChange'));
  // Ba jekhane pathate chan
 
         

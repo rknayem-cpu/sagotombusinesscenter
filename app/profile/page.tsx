@@ -43,6 +43,8 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
   
+  window.dispatchEvent(new Event('authChange'));
+  
     try {
       // Logout API thakle sheta fetch diye call kora bhalo
       const res = await fetch("/api/logout", { method: "POST" });
@@ -51,7 +53,6 @@ export default function ProfilePage() {
       if (res.ok) {
       
       // Logout successful hobar por
-window.dispatchEvent(new Event('authChange'));
       
         router.push("/login");
       }
