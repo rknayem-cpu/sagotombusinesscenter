@@ -40,7 +40,7 @@ export default function ProductDisplayPage() {
   if (loading) return <div className="h-screen grid place-items-center"><Loader2 className="animate-spin text-indigo-600" /></div>;
 
   return (
-    <div className="max-w-7xl mx-auto py-12 px-4">
+    <div className="max-w-7xl mx-auto mt-16 py-12 px-4">
       <header className="mb-10 text-center md:text-left">
         <h2 className="text-4xl font-black text-slate-900">New Drops.</h2>
         <p className="text-slate-500 italic">Handpicked just for you.</p>
@@ -50,9 +50,10 @@ export default function ProductDisplayPage() {
         <div className="text-center py-20 opacity-20"><PackageOpen size={60} className="mx-auto" /><p>NO STOCK</p></div>
       ) : (
         /* Grid: Mobile 2, Tablet 3, Desktop 4 */
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2
+         md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
           {products.map((p) => (
-            <div key={p._id} className="group relative">
+            <div key={p._id} className="group relative rounded-lg border border-green-500">
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100">
                 <img src={p.imgUrl} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 
@@ -77,7 +78,7 @@ export default function ProductDisplayPage() {
                   <p className="font-black text-slate-900">${p.price}</p>
                   <button 
                     onClick={() => handleAddToCart(p._id, p.title)}
-                    className="text-xs font-bold text-indigo-600 hover:underline">
+                    className="text-xs p-3 bg-orange-500 font-bold text-indigo-600 hover:underline">
                     + Add
                   </button>
                 </div>
