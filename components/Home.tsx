@@ -5,12 +5,21 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiPrinter, FiAward, FiUserCheck, FiLayers, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
 
+
+
+
 const productImages = [
-  "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400",
-  "https://images.unsplash.com/photo-1572025442646-866d16c84a54?w=400",
-  "https://images.unsplash.com/photo-1521109464564-2fa2faa95858?w=400",
-  "https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=400",
-];
+"https://www.photoland.in/wp-content/uploads/2025/05/School-ID-Card-Vertical_Design-2_c-768x768.jpg",
+"https://images.graphicbangla.com/images/2025/07/30/688a43b9330851753891769.jpeg",
+"https://shorifart.com/wp-content/uploads/2024/06/18-1-scaled.jpg",
+"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRccj3CORY3LDfGbTEL4zLo2XIXEq2Z71PRJ_uwJtaX7MmiqpgCoaReKsI&s=10"
+]
+
+
+
+
+
+
 
 const services = [
   { icon: <FiUserCheck />, text: "প্রিভিসি আইডি কার্ড" },
