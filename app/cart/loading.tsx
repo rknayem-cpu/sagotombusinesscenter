@@ -9,7 +9,7 @@ export default function CartLoading() {
       <div className="min-h-screen bg-slate-50/50 py-24 px-6">
         <div className="max-w-5xl mx-auto">
           
-          {/* Header Skeleton */}
+         
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-3">
               <Skeleton circle width={40} height={40} />
