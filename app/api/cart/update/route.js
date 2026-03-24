@@ -15,23 +15,31 @@ export async function POST(req) {
     const itemIndex = user.cart.findIndex(item => item.post.toString() === productId);
 
     if (itemIndex > -1) {
+      // 1. Quantity Barano
       if (action === 'inc') {
         user.cart[itemIndex].quantity += 1;
-      } else if (action === 'dec') {
+      } 
+      // 2. Quantity Komano
+      else if (action === 'dec') {
         if (user.cart[itemIndex].quantity > 1) {
           user.cart[itemIndex].quantity -= 1;
         } else {
-          // Quantity 1 er niche gele item cart theke remove hoye jabe
           user.cart.splice(itemIndex, 1);
         }
       }
+      // 3. Purapuri Delete Kora (Ei part-tuku add kora hoyeche)
+      else if (action === 'delete') {
+        user.cart.splice(itemIndex, 1);
+      }
+
       await user.save();
-      return NextResponse.json({ success: true, message: 'Cart updated' });
+      return NextResponse.json({ success: true, message: 'Cart updated successfully' });
     }
 
     return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
 
   } catch (error) {
+    console.error("Cart update error:", error);
     return NextResponse.json({ success: false, error: 'Update failed' }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Package, ImagePlus, DollarSign, Type, AlignLeft, Layers3, Loader2 } from 'lucide-react';
 
-const categories = ['Electronics', 'Clothing', 'Home Appliance', 'Beauty'];
+const categories = ['ক্রেরেস্ট', 'গেনজি', 'আইডি কার্ড', 'মগ'];
 
 export default function AddProductPage() {
   const [loading, setLoading] = useState(false);

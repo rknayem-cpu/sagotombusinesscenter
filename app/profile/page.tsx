@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-// Axios removed
 import {
   User, Mail, MapPin, LogOut, Loader2,
   Settings, ShoppingBag, ShieldCheck, Edit3
@@ -10,65 +9,59 @@ import {
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+
   const router = useRouter();
 
+  // Profile data fetch kora
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // Native Fetch GET request
         const res = await fetch("/api/profile", {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
+          cache: 'no-store' // Cache bondho rakha bhalo
         });
 
         if (res.ok) {
           const data = await res.json();
           setUser(data);
         } else {
-          // Status 401 ba onno error hole login-e pathiye debe
           router.push("/login");
         }
       } catch (err) {
         console.error("Profile fetch error:", err);
         router.push("/login");
-      } finally {
-        setLoading(false);
       }
     };
     fetchProfile();
   }, [router]);
 
+  // --- LOGOUT LOGIC (FIXED) ---
   const handleLogout = async () => {
-  
-  window.dispatchEvent(new Event('authChange'));
-  
     try {
-      // Logout API thakle sheta fetch diye call kora bhalo
-      const res = await fetch("/api/logout", { method: "POST" });
-      
+      // 1. Prothome server-ke logout request pathaw
+      const res = await fetch("/api/logout", { 
+        method: "POST",
+        cache: 'no-store' 
+      });
       
       if (res.ok) {
-      
-      // Logout successful hobar por
-      
+        // 2. Server success korle ekhon Navbar & Cart-ke signal dao
+        window.dispatchEvent(new Event('authChange'));
+        window.dispatchEvent(new Event('cartUpdated'));
+        
+        // 3. Ekhon redirect koro
         router.push("/login");
+        router.refresh(); // Next.js server components refresh korar jonno
       }
     } catch (err) {
-      // Error holeo safety-r jonno login-e pathiye deya jay
-      router.push("/");
+      console.error("Logout failed:", err);
+      // Error holeo UI safety-r jonno redirect kora bhalo
+      router.push("/login");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-      </div>
-    );
-  }
+  
 
   return (
     <div className="min-h-screen bg-[#f1f5f9] pb-12">
@@ -154,8 +147,7 @@ export default function ProfilePage() {
                 </button>
                 <hr className="my-3 border-slate-100" />
                 <button
-                
-                 type="button" 
+                  type="button" 
                   onClick={handleLogout}
                   className="w-full flex items-center p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all font-bold"
                 >
@@ -163,14 +155,6 @@ export default function ProfilePage() {
                   Logout
                 </button>
               </nav>
-            </div>
-
-            <div className="bg-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-200">
-              <h4 className="font-bold mb-2">Need Help?</h4>
-              <p className="text-blue-100 text-xs mb-4">Contact our support team for any issues with your account.</p>
-              <button className="w-full bg-white text-blue-600 py-2 rounded-xl text-sm font-bold hover:bg-blue-50 transition-colors">
-                Contact Support
-              </button>
             </div>
           </div>
         </div>

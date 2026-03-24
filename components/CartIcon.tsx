@@ -1,64 +1,54 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Navigation er jonno
+import { useRouter } from 'next/navigation';
 import { IoCartOutline } from 'react-icons/io5';
-import Swal from 'sweetalert2'; // Stylish alert er jonno
+import Swal from 'sweetalert2';
 
 export default function CartIcon() {
   const [cartCount, setCartCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
-  // 1. Auth Status Check korar function
-  const checkAuthStatus = async () => {
+  // 1. Auth Status & Cart Count check korar unified function
+  const refreshStatus = async () => {
     try {
-      const res = await fetch("/api/auth/check");
+      const res = await fetch("/api/auth/check", { cache: 'no-store' });
       const data = await res.json();
       setIsLoggedIn(data.isLoggedIn);
+
+      if (data.isLoggedIn) {
+        // Jodi login thake, tobe cart count fetch koro
+        const cartRes = await fetch('/api/cart/count', { cache: 'no-store' });
+        const cartData = await cartRes.json();
+        if (cartData.success) setCartCount(cartData.count);
+      } else {
+        // Logout thakle count 0 kore dao
+        setCartCount(0);
+      }
     } catch (err) {
       setIsLoggedIn(false);
+      setCartCount(0);
     }
   };
 
-  // 2. Cart Count fetch korar function
-  const fetchCartCount = async () => {
-    try {
-      const res = await fetch('/api/cart/count');
-      const data = await res.json();
-      if (data.success) setCartCount(data.count);
-    } catch (err) {
-      console.error("Fetch error", err);
-    }
-  };
-  
-  
-  
-  
+  useEffect(() => {
+    refreshStatus(); // Page load hole prothom bar call
 
-useEffect(() => {
-  checkAuthStatus();
-  fetchCartCount();
+    // Listener function
+    const handleUpdate = () => {
+      console.log("Signal Received! Refreshing...");
+      refreshStatus();
+    };
 
-  const handleCartUpdate = () => fetchCartCount();
-  const handleAuthUpdate = () => checkAuthStatus(); // Auth status update function
+    window.addEventListener('cartUpdated', handleUpdate);
+    window.addEventListener('authChange', handleUpdate);
 
-  window.addEventListener('cartUpdated', handleCartUpdate);
-  window.addEventListener('authChange', handleAuthUpdate); // Event listen kora
+    return () => {
+      window.removeEventListener('cartUpdated', handleUpdate);
+      window.removeEventListener('authChange', handleUpdate);
+    };
+  }, []);
 
-  return () => {
-    window.removeEventListener('cartUpdated', handleCartUpdate);
-    window.removeEventListener('authChange', handleAuthUpdate);
-  };
-}, []);
-
-
-
-
-
-
-
-
-  // 3. Handle Navigation with Auth Check
   const handleCartClick = () => {
     if (isLoggedIn) {
       router.push('/cart');
@@ -68,33 +58,22 @@ useEffect(() => {
         text: 'Please login to use this feature',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#ea580c', // orange-600 color
+        confirmButtonColor: '#ea580c',
         cancelButtonColor: '#64748b',
         confirmButtonText: 'Login Now',
-        background: '#ffffff',
-        customClass: {
-          popup: 'rounded-2xl',
-          confirmButton: 'rounded-lg px-5 py-2',
-          cancelButton: 'rounded-lg px-5 py-2'
-        }
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push('/login'); // Login page e redirect korbe
+          router.push('/login');
         }
       });
     }
   };
 
   return (
-    <button 
-      onClick={handleCartClick}
-      className="relative p-2 text-slate-700 hover:text-orange-500 transition-all outline-none"
-    >
+    <button onClick={handleCartClick} className="relative p-2 text-slate-700 hover:text-orange-500 transition-all outline-none">
       <IoCartOutline className="text-3xl" />
-      {cartCount > 0 && (
-        <span className="absolute top-5 right-1 bg-orange-600 text-white text-[10px] 
-                         font-bold w-6 h-6 flex items-center justify-center 
-                         rounded-full border-2 border-white shadow-sm">
+      {isLoggedIn && cartCount > 0 && (
+        <span className="absolute top-5 right-1 bg-orange-600 text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
           {cartCount}
         </span>
       )}

@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+      },
+    ],
   },
   {
     // Automatic createdAt ebong updatedAt field create korbe
