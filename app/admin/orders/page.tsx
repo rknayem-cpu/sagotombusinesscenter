@@ -26,7 +26,7 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('/api/admin/orders');
+      const res = await fetch('/api/admin/orders', { cache: 'no-store' });
       const data = await res.json();
       if (data.success) setOrders(data.data);
     } catch (err) { console.error(err); } finally { setLoading(false); }
@@ -57,9 +57,13 @@ export default function AdminOrdersPage() {
       confirmButtonText: 'Yes'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await fetch(`/api/admin/orders/${id}`, { method: 'DELETE' });
-        fetchOrders();
+      const res = await fetch(`/api/admin/orders/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        // ডাটাবেজ থেকে ডিলিট হওয়ার পর স্টেট থেকেও সরিয়ে দিন
+        setOrders(prev => prev.filter(order => order._id !== id));
+        Swal.fire('Deleted!', 'Order removed.', 'success');
       }
+    }
     });
   };
 
