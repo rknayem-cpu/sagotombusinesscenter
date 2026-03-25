@@ -73,8 +73,8 @@ export default function ProfilePage() {
 
   // স্কেলিটন লোডার (রিলোড ছাড়া সুন্দর দেখাবে)
   if (loading) return (
-    <div className="min-h-screen w-full bg-white flex items-center justify-center">
-      <Loader2 className="animate-spin text-blue-600" size={40} />
+    <div className="min-h-screen w-full ">
+      
     </div>
   );
 

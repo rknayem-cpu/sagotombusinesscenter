@@ -94,7 +94,7 @@ export default function ProductDisplayPage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((p) => (
-            <div key={p._id} className="group border border-slate-100 rounded-2xl p-2 transition bg-white hover:border-orange-200">
+            <div key={p._id} className="border border-slate-100 rounded-2xl p-2 transition bg-white hover:border-orange-200">
               <div className="relative h-48 md:h-64 w-full overflow-hidden rounded-xl bg-gray-50">
                 <div className='w-full h-full flex justify-center'>
                   <img 
@@ -121,7 +121,7 @@ export default function ProductDisplayPage() {
                 <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-50">
                   <div className="flex flex-col">
                     <span className="text-[10px] text-gray-400 font-bold leading-none">Price</span>
-                    <p className="text-lg font-black text-gray-950 tracking-tighter leading-none">${p.price}</p>
+                    <p className="text-lg font-black text-gray-950 tracking-tighter leading-none">{p.price} taka</p>
                   </div>
 
                   <button 
