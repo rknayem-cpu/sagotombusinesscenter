@@ -9,7 +9,7 @@ import {
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
-
+const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // Profile data fetch kora
@@ -31,6 +31,8 @@ export default function ProfilePage() {
       } catch (err) {
         console.error("Profile fetch error:", err);
         router.push("/login");
+      }finally {
+        setLoading(false);
       }
     };
     fetchProfile();
@@ -61,7 +63,10 @@ export default function ProfilePage() {
     }
   };
 
-  
+  if (loading) return <div className="min-h-screen w-full bg-white">
+    
+    </div>;
+  if (!user) return <div className="min-h-screen flex items-center justify-center">User Not Found</div>;
 
   return (
     <div className="min-h-screen bg-[#f1f5f9] pb-12">
