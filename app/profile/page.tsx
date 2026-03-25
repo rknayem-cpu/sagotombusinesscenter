@@ -9,67 +9,83 @@ import {
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Profile data fetch kora
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch("/api/profile", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          cache: 'no-store' // Cache bondho rakha bhalo
-        });
+  // ১. প্রোফাইল ডাটা ফেচ করার সময় টাইমস্ট্যাম্প ব্যবহার (Vercel Cache Bypass)
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch(`/api/profile?t=${Date.now()}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        cache: 'no-store'
+      });
 
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        } else {
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error("Profile fetch error:", err);
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+      } else {
+        // অথেন্টিকেশন না থাকলে সরাসরি লগইন
         router.push("/login");
-      }finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      console.error("Profile fetch error:", err);
+      router.push("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, [router]);
 
-  // --- LOGOUT LOGIC (FIXED) ---
+  // ২. লগআউট লজিক (রিলোড ছাড়া)
   const handleLogout = async () => {
+    setLoading(true); // ইউজারকে একটা ফিডব্যাক দেওয়া
     try {
-      // 1. Prothome server-ke logout request pathaw
       const res = await fetch("/api/logout", { 
         method: "POST",
         cache: 'no-store' 
       });
       
       if (res.ok) {
-        // 2. Server success korle ekhon Navbar & Cart-ke signal dao
+        // ডাটাবেজ/কুকি থেকে লগআউট হওয়ার পর লোকাল স্টেট ক্লিয়ার করুন
+        setUser(null); 
+        
+        // গ্লোবাল ইভেন্ট ফায়ার করা (Navbar/Cart আপডেট হবে)
         window.dispatchEvent(new Event('authChange'));
         window.dispatchEvent(new Event('cartUpdated'));
         
-        // 3. Ekhon redirect koro
+        // ৩. ভের্সেলকে বাধ্য করা সার্ভার কম্পোনেন্ট ডাটা আপডেট করতে
+        router.refresh(); 
+        
+        // সরাসরি লগইন পেজে পাঠানো
         router.push("/login");
-        router.refresh(); // Next.js server components refresh korar jonno
       }
     } catch (err) {
       console.error("Logout failed:", err);
-      // Error holeo UI safety-r jonno redirect kora bhalo
       router.push("/login");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <div className="min-h-screen w-full bg-white">
-    
-    </div>;
-  if (!user) return <div className="min-h-screen flex items-center justify-center">User Not Found</div>;
+  // স্কেলিটন লোডার (রিলোড ছাড়া সুন্দর দেখাবে)
+  if (loading) return (
+    <div className="min-h-screen w-full bg-white flex items-center justify-center">
+      <Loader2 className="animate-spin text-blue-600" size={40} />
+    </div>
+  );
+
+  if (!user) return (
+    <div className="min-h-screen w-full bg-white flex items-center justify-center">
+      <p className="text-sm font-bold text-gray-500">Redirecting to login...</p>
+    </div>  
+  ) // ইউজার না থাকলে কিছু দেখাবে না, জাস্ট রিডাইরেক্ট হবে
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] pb-12">
+    <div className="min-h-screen bg-[#f1f5f9] pb-12 font-sans">
       {/* Header Blue Section */}
       <div className="h-64 bg-gradient-to-r from-blue-700 to-indigo-800 relative">
         <div className="absolute -bottom-16 left-0 right-0 flex justify-center">
@@ -79,7 +95,7 @@ const [loading, setLoading] = useState(true);
                 <User className="h-16 w-16 text-slate-400" />
               </div>
             </div>
-            <button className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full text-white shadow-lg hover:bg-blue-700 transition-all">
+            <button className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full text-white shadow-lg hover:bg-blue-700 transition-all active:scale-90">
               <Edit3 className="h-4 w-4" />
             </button>
           </div>
@@ -88,46 +104,46 @@ const [loading, setLoading] = useState(true);
 
       <div className="max-w-4xl mx-auto px-4 mt-20">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-slate-900">{user?.name}</h1>
-          <p className="text-slate-500 font-medium">Verified Customer</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{user?.name}</h1>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Verified Customer</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-              <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
-                <ShieldCheck className="h-5 w-5 mr-2 text-green-500" />
-                Personal Information
+              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center">
+                <ShieldCheck className="h-4 w-4 mr-2 text-green-500" />
+                Account Details
               </h3>
 
-              <div className="space-y-6">
-                <div className="flex items-center p-4 bg-slate-50 rounded-2xl group transition-all hover:bg-blue-50">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 group-hover:text-blue-600">
-                    <User className="h-5 w-5" />
+              <div className="space-y-4">
+                <div className="flex items-center p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 transition-all">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 text-slate-400">
+                    <User size={20} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Full Name</p>
-                    <p className="text-slate-700 font-semibold">{user?.name}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider leading-none mb-1">Full Name</p>
+                    <p className="text-slate-800 font-bold">{user?.name}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center p-4 bg-slate-50 rounded-2xl group transition-all hover:bg-blue-50">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 group-hover:text-blue-600">
-                    <Mail className="h-5 w-5" />
+                <div className="flex items-center p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 transition-all">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 text-slate-400">
+                    <Mail size={20} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Email Address</p>
-                    <p className="text-slate-700 font-semibold">{user?.email}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider leading-none mb-1">Email Address</p>
+                    <p className="text-slate-800 font-bold">{user?.email}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center p-4 bg-slate-50 rounded-2xl group transition-all hover:bg-blue-50">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 group-hover:text-blue-600">
-                    <MapPin className="h-5 w-5" />
+                <div className="flex items-center p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 transition-all">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mr-4 text-slate-400">
+                    <MapPin size={20} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Living Address</p>
-                    <p className="text-slate-700 font-semibold">{user?.address || "No address added yet"}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider leading-none mb-1">Living Address</p>
+                    <p className="text-slate-800 font-bold">{user?.address || "Update your address"}</p>
                   </div>
                 </div>
               </div>
@@ -136,28 +152,28 @@ const [loading, setLoading] = useState(true);
 
           <div className="space-y-6">
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 px-2">Quick Menu</h3>
-              <nav className="space-y-2">
-                <button className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-all group">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-2">Quick Menu</h3>
+              <nav className="space-y-1">
+                <button className="w-full flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-all group">
                   <div className="flex items-center">
                     <ShoppingBag className="h-5 w-5 mr-3 text-slate-400 group-hover:text-blue-600" />
-                    <span className="text-slate-600 font-medium group-hover:text-slate-900">My Orders</span>
+                    <span className="text-slate-600 font-bold group-hover:text-slate-900">My Orders</span>
                   </div>
                 </button>
-                <button className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-all group">
+                <button className="w-full flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-all group">
                   <div className="flex items-center">
                     <Settings className="h-5 w-5 mr-3 text-slate-400 group-hover:text-blue-600" />
-                    <span className="text-slate-600 font-medium group-hover:text-slate-900">Settings</span>
+                    <span className="text-slate-600 font-bold group-hover:text-slate-900">Settings</span>
                   </div>
                 </button>
                 <hr className="my-3 border-slate-100" />
                 <button
                   type="button" 
                   onClick={handleLogout}
-                  className="w-full flex items-center p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all font-bold"
+                  className="w-full flex items-center p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all font-black uppercase text-xs tracking-tighter"
                 >
                   <LogOut className="h-5 w-5 mr-3" />
-                  Logout
+                  Logout Account
                 </button>
               </nav>
             </div>
