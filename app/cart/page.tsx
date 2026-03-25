@@ -81,12 +81,10 @@ const handleCheckout = () => {
   };
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.post.price * item.quantity), 0);
-
-  if (loading) return (
-    <div className="min-h-screen w-full bg-white">
-      
-    </div>
-  );
+if (loading) return <div className="min-h-screen w-full bg-white">
+    
+    </div>;
+  if (!cartItems) return <div className="min-h-screen flex items-center justify-center">Product Not Found</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 mt-16">

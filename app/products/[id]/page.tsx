@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ShoppingBag, ArrowLeft, Star, ShieldCheck, Truck, Loader2, Plus, Minus } from 'lucide-react';
-import Link from 'next/link';
+
 import Swal from 'sweetalert2';
 
 interface Product {

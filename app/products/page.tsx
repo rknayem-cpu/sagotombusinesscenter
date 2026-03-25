@@ -23,7 +23,12 @@ export default function ProductDisplayPage() {
         const res = await fetch("/api/auth/check");
         const data = await res.json();
         setIsLoggedIn(data.isLoggedIn);
-      } catch { setIsLoggedIn(false); }
+      } catch { 
+        setIsLoggedIn(false); 
+
+      }finally {
+        setLoading(false);
+      }
     };
 
     const fetchProducts = () => {
@@ -59,7 +64,10 @@ export default function ProductDisplayPage() {
     } finally { setAddingId(null); }
   };
 
-  if (loading) return <div className="min-h-screen bg-white" />;
+  if (loading) return <div className="min-h-screen w-full bg-white">
+    
+    </div>;
+  if (!products) return <div className="min-h-screen flex items-center justify-center">Product Not Found</div>;
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 bg-white mt-14">
