@@ -23,13 +23,12 @@ export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ১. ডাটা ফেচ করার সময় ক্যাশ ব্লাস্টিং (Cache Blasting)
+  // আপনার সফল হওয়া পেজটির মতো একদম সিম্পল ফেচিং
   const fetchOrders = async () => {
     try {
-      // ?t=Date.now() যোগ করা হয়েছে যাতে ভের্সেল পুরনো ডাটা না দেখায়
+      // ক্যাশ ব্লাস্টিং টাইমস্ট্যাম্পসহ
       const res = await fetch(`/api/admin/orders?t=${Date.now()}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache' }
+        cache: 'no-store'
       });
       const data = await res.json();
       if (data.success) {
@@ -46,7 +45,7 @@ export default function AdminOrdersPage() {
     fetchOrders();
   }, []);
 
-  // ২. স্ট্যাটাস আপডেট লজিক (সরাসরি স্টেট পরিবর্তন)
+  // স্ট্যাটাস আপডেট লজিক
   const updateStatus = async (id: string, newStatus: string) => {
     try {
       const res = await fetch(`/api/admin/orders/${id}`, {
@@ -56,39 +55,38 @@ export default function AdminOrdersPage() {
       });
 
       if (res.ok) {
-        // ম্যাজিক এখানে: ডাটাবেজ থেকে আবার ফেচ করার দরকার নেই, সরাসরি স্টেট আপডেট করুন
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
-            order._id === id ? { ...order, status: newStatus } : order
-          )
+        // রিলোড ছাড়া UI আপডেট (Optimistic Update)
+        setOrders(prev => 
+          prev.map(order => order._id === id ? { ...order, status: newStatus } : order)
         );
-
+        
         Swal.fire({ 
           toast: true, position: 'top-end', icon: 'success', 
           title: `Status: ${newStatus}`, showConfirmButton: false, timer: 1000 
         });
       }
     } catch (err) {
-      console.error("Update Error:", err);
+      console.error(err);
     }
   };
 
-  // ৩. ডিলিট লজিক (সরাসরি লিস্ট থেকে রিমুভ)
+  // ডিলিট লজিক (আপনার সফল হওয়া প্রোডাক্ট পেজ থেকে নেওয়া)
   const deleteOrder = async (id: string) => {
     Swal.fire({
-      title: 'Delete Order?',
-      text: "Data strictly removed from database!",
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
-      confirmButtonText: 'Yes, Delete'
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it!'
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await fetch(`/api/admin/orders/${id}`, { method: 'DELETE' });
         if (res.ok) {
-          // রিলোড ছাড়াই সাথে সাথে UI থেকে সরিয়ে ফেলুন
-          setOrders(prevOrders => prevOrders.filter(order => order._id !== id));
-          Swal.fire('Deleted!', 'Order removed.', 'success');
+          Swal.fire('Deleted!', 'Order has been removed.', 'success');
+          // আপনার সফল পেজটির মতো সরাসরি লিস্ট আপডেট
+          setOrders(prev => prev.filter(order => order._id !== id));
         }
       }
     });
@@ -102,6 +100,7 @@ export default function AdminOrdersPage() {
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen">
       <Loader2 className="animate-spin text-orange-600" size={40} />
+      <p className="ml-2 font-bold text-gray-400">LOADING ORDERS...</p>
     </div>
   );
 
@@ -110,46 +109,51 @@ export default function AdminOrdersPage() {
       <div className="max-w-[1600px] mx-auto">
         
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-          <h1 className="text-xl font-bold flex items-center gap-2 uppercase tracking-tight">
-            <Package className="text-orange-600" size={24} /> Orders: {filteredOrders.length}
+          <h1 className="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
+            <Package className="text-orange-600" size={24} /> 
+            Orders Panel <span className="text-gray-300">/</span> {filteredOrders.length}
           </h1>
-          <input 
-            type="text" placeholder="Search ID or Phone..." 
-            className="w-full md:w-80 p-2.5 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 font-medium text-sm"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input 
+              type="text" 
+              placeholder="Search ID or Phone..." 
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-500 font-bold text-sm transition-all"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
           {filteredOrders.map((order) => (
-            <div key={order._id} className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex flex-col hover:border-orange-300 transition-all">
+            <div key={order._id} className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 shadow-sm flex flex-col hover:border-orange-300 transition-all group">
               
-              <div className="flex justify-between items-start mb-3">
-                <span className="text-[10px] font-bold text-gray-400 font-mono">#{order._id.slice(-8)}</span>
-                <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
-                  order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
-                  order.status === 'Shipped' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-[10px] font-black text-gray-300 font-mono tracking-tighter uppercase">ID: {order._id.slice(-10)}</span>
+                <span className={`text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest ${
+                  order.status === 'Delivered' ? 'bg-green-50 text-green-600' : 
+                  order.status === 'Shipped' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'
                 }`}>
                   {order.status}
                 </span>
               </div>
 
-              <div className="mb-3">
-                <p className="text-lg font-bold text-gray-900 leading-none">{order.phone}</p>
-                <p className="text-[11px] text-gray-500 mt-1 truncate font-medium">
-                  <MapPin size={10} className="inline mr-0.5" /> {order.shippingAddress}
+              <div className="mb-4">
+                <p className="text-xl font-black text-gray-900 leading-none tracking-tight">{order.phone}</p>
+                <p className="text-[11px] text-gray-400 mt-2 truncate font-bold uppercase flex items-center gap-1">
+                  <MapPin size={12} className="text-orange-500" /> {order.shippingAddress}
                 </p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-2 mb-3 border border-gray-100">
-                <div className="max-h-[140px] overflow-y-auto space-y-2 pr-1">
+              <div className="bg-gray-50 rounded-[1.5rem] p-3 mb-4 border border-gray-100">
+                <div className="max-h-[160px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                   {order.items.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-gray-100">
-                      <img src={item.imgUrl} className="h-14 w-14 object-cover rounded-md flex-shrink-0" />
+                    <div key={i} className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-50">
+                      <img src={item.imgUrl} className="h-12 w-12 object-cover rounded-lg flex-shrink-0" />
                       <div className="min-w-0">
-                        <p className="text-[13px] font-bold text-gray-800 truncate leading-tight uppercase">{item.title}</p>
-                        <p className="text-[12px] text-gray-600 font-medium">
-                          {item.quantity} x ৳{item.price} = <span className="text-orange-600 font-bold">৳{item.quantity * item.price}</span>
+                        <p className="text-[12px] font-black text-gray-800 truncate leading-tight uppercase tracking-tighter">{item.title}</p>
+                        <p className="text-[11px] text-gray-500 font-bold mt-0.5">
+                          {item.quantity} x <span className="text-orange-600">৳{item.price}</span>
                         </p>
                       </div>
                     </div>
@@ -158,20 +162,20 @@ export default function AdminOrdersPage() {
               </div>
 
               <div className="mt-auto">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">Grand Total:</span>
-                  <span className="text-xl font-black text-orange-600 tracking-tighter">৳{order.totalAmount}</span>
+                <div className="flex justify-between items-center mb-4 px-1">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Amount</span>
+                  <span className="text-2xl font-black text-gray-950 tracking-tighter">৳{order.totalAmount}</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-1.5">
-                  <button onClick={() => updateStatus(order._id, 'Shipped')} className="py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex justify-center transition active:scale-90">
-                    <Truck size={18} />
+                <div className="grid grid-cols-3 gap-2">
+                  <button onClick={() => updateStatus(order._id, 'Shipped')} className="h-12 bg-gray-900 text-white rounded-xl hover:bg-blue-600 flex items-center justify-center transition active:scale-90" title="Mark Shipped">
+                    <Truck size={20} />
                   </button>
-                  <button onClick={() => updateStatus(order._id, 'Delivered')} className="py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex justify-center transition active:scale-90">
-                    <CheckCircle size={18} />
+                  <button onClick={() => updateStatus(order._id, 'Delivered')} className="h-12 border-2 border-gray-950 text-gray-950 rounded-xl hover:bg-gray-950 hover:text-white flex items-center justify-center transition active:scale-90" title="Mark Delivered">
+                    <CheckCircle size={20} />
                   </button>
-                  <button onClick={() => deleteOrder(order._id)} className="py-2 bg-gray-100 text-red-600 rounded-lg hover:bg-red-600 hover:text-white flex justify-center transition border border-gray-200 active:scale-90">
-                    <Trash2 size={18} />
+                  <button onClick={() => deleteOrder(order._id)} className="h-12 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white flex items-center justify-center transition active:scale-90 border border-red-100" title="Delete Order">
+                    <Trash2 size={20} />
                   </button>
                 </div>
               </div>
