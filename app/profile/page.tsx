@@ -216,18 +216,13 @@ export default function ProfilePage() {
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-2">Quick Menu</h3>
               <nav className="space-y-1">
-                <button className="w-full flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-all group">
+                <button onClick={()=>router.push('/my-orders')} className="w-full flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-all group">
                   <div className="flex items-center">
                     <ShoppingBag className="h-5 w-5 mr-3 text-slate-400 group-hover:text-blue-600" />
                     <span className="text-slate-600 font-bold group-hover:text-slate-900">My Orders</span>
                   </div>
                 </button>
-                <button className="w-full flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-all group">
-                  <div className="flex items-center">
-                    <Settings className="h-5 w-5 mr-3 text-slate-400 group-hover:text-blue-600" />
-                    <span className="text-slate-600 font-bold group-hover:text-slate-900">Settings</span>
-                  </div>
-                </button>
+               
                 <hr className="my-3 border-slate-100" />
                 <button
                   type="button" 

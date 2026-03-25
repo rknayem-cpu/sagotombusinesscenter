@@ -6,7 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 export default function ProductLoading() {
   return (
     <SkeletonTheme baseColor="#f1f5f9" highlightColor="#ffffff">
-      <div className="min-h-screen bg-white py-12 px-4 md:px-8">
+      <div className="min-h-screen bg-white py-12 px-4 md:px-8 mt-10">
         <div className="max-w-7xl mx-auto">
           
           {/* Back Button Skeleton */}

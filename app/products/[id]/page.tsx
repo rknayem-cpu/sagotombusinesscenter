@@ -54,7 +54,7 @@ export default function SingleProductPage() {
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product Not Found</div>;
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4 md:px-8">
+    <div className="min-h-screen bg-white py-12 px-4 md:px-8 mt-10">
       <div className="max-w-7xl mx-auto">
         
         {/* Navigation */}

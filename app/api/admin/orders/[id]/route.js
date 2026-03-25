@@ -105,9 +105,18 @@ Address: ${updatedOrder.shippingAddress}
 // অর্ডার ডিলিট করার জন্য (আগের মতোই থাকছে)
 export async function DELETE(req, { params }) {
   try {
-    await connectDB();
+     connectDB();
     const { id } = params;
+    const cookieStore = cookies();
+const userId = cookieStore.get('userId')?.value;
+const user = await User.findById(userId);
 
+    // ইউজার না পাওয়া গেলে অথবা ইউজারের অর্ডার লিস্টে এই অর্ডার না থাকলে 403 Forbidden রেসপন্স দিন
+    if (!user || !user.orders.includes(id)) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+    }
+     user.orders = user.orders.filter(orderId => orderId.toString() !== id);
+    await user.save();
     const deletedOrder = await Order.findByIdAndDelete(id);
 
     if (!deletedOrder) {
