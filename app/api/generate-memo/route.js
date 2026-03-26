@@ -13,7 +13,7 @@ export async function POST(req) {
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontkit);
 
-    const imagePath = path.join(process.cwd(), 'public', 'memo.jpeg');
+    const imagePath = path.join(process.cwd(), 'public', 'memo.jpg');
     const imageBytes = fs.readFileSync(imagePath);
     const image = await pdfDoc.embedJpg(imageBytes);
 
