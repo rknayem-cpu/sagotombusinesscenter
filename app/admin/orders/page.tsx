@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Search, Trash2, CheckCircle, Truck, Loader2, Package, MapPin } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import Logout from '@/components/Logout';
 interface Order {
   _id: string;
   phone: string;
@@ -188,7 +187,6 @@ export default function AdminOrdersPage() {
           ))}
         </div>
       </div>
-     <Logout />
     </div>
   );
 }

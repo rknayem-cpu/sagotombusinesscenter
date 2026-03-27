@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
 
   // ২. রুট লিস্ট তৈরি
   const authRoutes = ['/login', '/register', '/verify'];
-  const adminProtectedRoutes = ['/admin/addpost', '/admin/orders', '/admin/posts'];
+  const adminProtectedRoutes = ['/admin/addpost', '/admin/orders', '/admin/posts','/admin'];
 
   // --- লজিক ১: সাধারণ ইউজার লগইন থাকলে রিডাইরেক্ট ---
   if (userId && authRoutes.some(route => pathname.startsWith(route))) {
@@ -37,6 +37,7 @@ export const config = {
     '/verify', 
     '/admin/addpost', 
     '/admin/orders', 
-    '/admin/posts'
+    '/admin/posts',
+    '/admin'
   ],
 };
