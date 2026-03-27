@@ -47,7 +47,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 p-4">
+    <div className="min-h-screen mt-12 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border border-slate-100">
         <div className="p-8">
           <div className="text-center mb-8">
@@ -128,10 +128,10 @@ export default function RegisterPage() {
 
           <p className="mt-8 text-center text-sm text-slate-500 font-medium">
             Already a member?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">Log in</a>
+            <button onClick={()=>router.push('/login')} className="text-blue-600 hover:underline">Log in</button>
           </p>
         </div>
       </div>
     </div>
-  );
+  ) ;
 }

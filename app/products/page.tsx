@@ -160,7 +160,7 @@ export default function ProductDisplayPage() {
                 <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-50">
                   <div className="flex flex-col">
                     <span className="text-[10px] text-gray-400 font-bold leading-none">Price</span>
-                    <p className="text-lg font-black text-gray-950 tracking-tighter leading-none">{p.price} taka</p>
+                    <p className="text-lg font-black text-gray-950 tracking-tighter leading-none">{p.price} টাকা</p>
                   </div>
 
                   <button 

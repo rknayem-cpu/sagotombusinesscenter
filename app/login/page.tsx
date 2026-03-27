@@ -72,6 +72,7 @@ export default function LoginPage() {
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-600" />
                 <input
                   type="email"
+                  placeholder="Enter email"
                   required
                   className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -84,6 +85,7 @@ export default function LoginPage() {
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-600" />
                 <input
+                placeholder="Enter password"
                   type="password"
                   required
                   className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
@@ -100,6 +102,14 @@ export default function LoginPage() {
               {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <span>Sign In</span>}
             </button>
           </form>
+
+          <div className="mt-8 w-full text-center">
+            Don't have an account?{" "}
+            <button onClick={()=>router.push('/register')} className="text-blue-600 font-bold hover:underline">
+              Sign Up
+            </button>
+           
+          </div>
         </div>
       </div>
     </div>

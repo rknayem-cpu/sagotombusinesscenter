@@ -2,10 +2,9 @@ import { FaFacebookF, FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa
 
 export default function Footer() {
   const socialLinks = [
-    { icon: <FaFacebookF />, hover: "hover:text-blue-600", href: "#" },
-    { icon: <FaInstagram />, hover: "hover:text-pink-600", href: "#" },
-    { icon: <FaWhatsapp />, hover: "hover:text-green-500", href: "#" },
-    { icon: <FaEnvelope />, hover: "hover:text-orange-500", href: "mailto:info@example.com" },
+    { icon: <FaFacebookF />, hover: "hover:text-blue-600", href: "https://www.facebook.com/Sagotombuisnesscenter" },
+    { icon: <FaWhatsapp />, hover: "hover:text-green-500", href: "https://wa.me/8801997219858" },
+    { icon: <FaEnvelope />, hover: "hover:text-orange-500", href: "mailto:rashidul2309@gmail.com" },
   ];
 
   return (
@@ -27,7 +26,7 @@ export default function Footer() {
         {/* Links Section */}
         <nav className="flex justify-center gap-6 text-sm font-bold text-slate-600">
           {['শর্তাবলী', 'গোপনীয়তা', 'যোগাযোগ'].map(l => (
-            <a key={l} href="#" className="hover:text-orange-600 transition-colors">{l}</a>
+            <a key={l} href="#" target="_blank" className="hover:text-orange-600 transition-colors">{l}</a>
           ))}
         </nav>
 
