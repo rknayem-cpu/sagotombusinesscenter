@@ -2,26 +2,41 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // 1. Cookie theke userId ber kora
-  const userId = request.cookies.get('userId')?.value;
-
-  // 2. Jei route-gulo check korte hobe
-  const authRoutes = ['/login', '/register', '/verify'];
-  
-  // 3. Current URL path ber kora
   const { pathname } = request.nextUrl;
 
-  // Logic: Jodi userId thake ebong user authRoutes-e jete chay
+  // ১. কুকি থেকে ডাটা বের করা
+  const userId = request.cookies.get('userId')?.value;
+  const adminToken = request.cookies.get('admin_token')?.value;
+
+  // ২. রুট লিস্ট তৈরি
+  const authRoutes = ['/login', '/register', '/verify'];
+  const adminProtectedRoutes = ['/admin/addpost', '/admin/orders', '/admin/posts'];
+
+  // --- লজিক ১: সাধারণ ইউজার লগইন থাকলে রিডাইরেক্ট ---
   if (userId && authRoutes.some(route => pathname.startsWith(route))) {
-    // Take 'profile' route-e redirect korun
     return NextResponse.redirect(new URL('/profile', request.url));
   }
 
-  // Jodi userId na thake, tobe request normal-vabe cholte thakbe
+  // --- লজিক ২: অ্যাডমিন রুট প্রটেকশন ---
+  // যদি ইউজার অ্যাডমিন রুটে যেতে চায় কিন্তু টোকেন না থাকে
+  if (adminProtectedRoutes.some(route => pathname.startsWith(route))) {
+    if (!adminToken) {
+      // তাকে অ্যাডমিন লগইন পেজে পাঠিয়ে দিন
+      return NextResponse.redirect(new URL('/login-admin', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
-// 4. Kon kon route-e middleware kaj korbe sheta specify kora
+// ৪. কনফিগারেশনে অ্যাডমিন রুটগুলোও যোগ করা হয়েছে
 export const config = {
-  matcher: ['/login', '/register', '/verify'],
+  matcher: [
+    '/login', 
+    '/register', 
+    '/verify', 
+    '/admin/addpost', 
+    '/admin/orders', 
+    '/admin/posts'
+  ],
 };

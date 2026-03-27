@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Trash2, CheckCircle, Truck, Loader2, Package, MapPin } from 'lucide-react';
 import Swal from 'sweetalert2';
-
+import { useRouter } from 'next/navigation';
+import Logout from '@/components/Logout';
 interface Order {
   _id: string;
   phone: string;
@@ -22,7 +23,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   // আপনার সফল হওয়া পেজটির মতো একদম সিম্পল ফেচিং
   const fetchOrders = async () => {
     try {
@@ -96,6 +97,9 @@ export default function AdminOrdersPage() {
     o._id.toLowerCase().includes(searchTerm.toLowerCase()) || 
     o.phone.includes(searchTerm)
   );
+
+
+
 
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen">
@@ -184,6 +188,7 @@ export default function AdminOrdersPage() {
           ))}
         </div>
       </div>
+     <Logout />
     </div>
   );
 }
