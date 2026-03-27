@@ -51,7 +51,7 @@ export default function InfoPage() {
               { icon: <ShoppingBag />, title: "পণ্য বাছাই", desc: "আপনার পছন্দের পণ্যটি কার্টে যোগ করুন।" },
               { icon: <Info />, title: "তথ্য প্রদান", desc: "দাম দেখে চেকআউট করে সঠিক নাম, ঠিকানা ও মোবাইল নম্বর দিন।" },
               { icon: <CreditCard />, title: "পেমেন্ট", desc: "বিকাশ বা নগদে অগ্রীম পেমেন্ট সম্পন্ন করুন। (৫০%)" },
-              { icon: <Truck />, title: "ডেলিভারি", desc: "৪৮-৭২ ঘণ্টার মধ্যে পণ্য পৌঁছে যাবে আপনার হাতে।" },
+              { icon: <Truck />, title: "ডেলিভারি", desc: "২৪-৪৮ ঘণ্টার মধ্যে পণ্য পৌঁছে যাবে আপনার হাতে।" },
             ].map((step, index) => (
               <div key={index} className="relative bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
                 <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
