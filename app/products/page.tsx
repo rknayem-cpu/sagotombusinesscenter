@@ -1,20 +1,20 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Loader2, Zap, Eye } from 'lucide-react';
+import { Loader2, ShoppingCart, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { FaShoppingCart } from "react-icons/fa";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+
 interface Product {
-  _id: string; title: string; price: number; imgUrl: string; category: string; size: string;
+  _id: string; title: string; price: number; imgUrl: string; category: string;
 }
 
 export default function ProductDisplayPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true); // SingleProductPage এর মতো শুরুতে true
+  const [loading, setLoading] = useState(true);
   const [addingId, setAddingId] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
@@ -22,55 +22,38 @@ export default function ProductDisplayPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // ১. একসাথেই Auth এবং Products ফেচ করা হচ্ছে
         const [authRes, productsRes] = await Promise.all([
           fetch("/api/auth/check"),
-          // ক্যাশ ভাঙার জন্য টাইমস্ট্যাম্প যোগ করা হয়েছে
           fetch(`/api/posts?t=${Date.now()}`, { cache: 'no-store' })
         ]);
-
         const authData = await authRes.json();
         const productsData = await productsRes.json();
-
         setIsLoggedIn(authData.isLoggedIn);
-        if (productsData.success) {
-          setProducts(productsData.data);
-        }
+        if (productsData.success) setProducts(productsData.data);
       } catch (err) {
-        console.error("Fetch error", err);
+        console.error(err);
       } finally {
-        // সব ডাটা আসার পর লোডিং ফলস হবে, এতে স্কেলিটন বা লোডার দেখা যাবে
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  const handleActionClick = (id: string, title: string) => {
+  const handleCartAction = async (id: string) => {
     if (!isLoggedIn) {
-      Swal.fire({
-        title: 'Sign In Required',
-        confirmButtonColor: '#000',
-        confirmButtonText: 'Login',
-      }).then((res) => res.isConfirmed && router.push('/login'));
+      const res = await Swal.fire({ title: 'Sign In', text: 'Please login to shop', icon: 'info', confirmButtonColor: '#000' });
+      if (res.isConfirmed) router.push('/login');
       return;
     }
-    handleAddToCart(id, title);
-  };
-
-  const handleAddToCart = async (id: string, title: string) => {
     setAddingId(id);
-    try {
-      const res = await fetch(`/api/cart/${id}`);
-      if (res.ok) {
-        window.dispatchEvent(new Event('cartUpdated'));
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Added!', showConfirmButton: false, timer: 1500 });
-      }
-    } finally { setAddingId(null); }
+    const res = await fetch(`/api/cart/${id}`);
+    if (res.ok) {
+      window.dispatchEvent(new Event('cartUpdated'));
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Added!', showConfirmButton: false, timer: 1000 });
+    }
+    setAddingId(null);
   };
 
-  // --- স্কেলিটন লোডিং ভিউ (আপনার SingleProductPage এর স্টাইলে) ---
   if (loading) return (
     <SkeletonTheme baseColor="#e2e8f0" highlightColor="#f1f5f9">
           <div className="max-w-7xl mx-auto mt-12 py-12 px-4">
@@ -116,68 +99,54 @@ export default function ProductDisplayPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto py-12 px-4 bg-white mt-14">
-      <div className="flex justify-between items-end mb-8">
-        <h2 className="text-4xl font-black text-gray-950 tracking-tighter leading-none">
-          New Drops<span className="text-orange-600">.</span>
-        </h2>
-        <Link href="/products" className="text-xs font-bold border-b-2 border-black pb-0.5 hover:text-orange-500 transition flex items-center gap-1">
-          VIEW ALL <Zap size={12} className="fill-orange-500 text-orange-500" />
-        </Link>
+    <div className="max-w-7xl mx-auto px-3 py-8 bg-white mt-12">
+      {/* Header */}
+      <div className="flex justify-between items-end mb-6 border-b pb-3">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 uppercase tracking-tighter">New Drops</h2>
+        <Link href="/teri" className="text-xs font-bold text-orange-600 border-b border-orange-600">VIEW ALL</Link>
       </div>
 
-      {products.length === 0 ? (
-        <div className="text-center py-20 border rounded-3xl text-gray-400 font-bold uppercase tracking-widest text-xs">
-          No Stock Available
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.map((p) => (
-            <div key={p._id} className="border border-slate-100 rounded-2xl p-2 transition bg-white hover:border-orange-200">
-              <div className="relative h-48 md:h-64 w-full overflow-hidden rounded-xl bg-gray-50">
-                <div className='w-full h-full flex justify-center'>
-                  <img 
-                    src={p.imgUrl} 
-                    alt={p.title}
-                    className="h-full group-hover:scale-110 transition duration-700 object-cover" 
-                  />
-                </div>
-                <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase shadow-sm">
-                  New
-                </div>
+      {/* Product Grid - Mobile e gap komano hoyeche jate chobi boro dekhay */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+        {products.map((p) => (
+          <div key={p._id} className="group bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all">
+            
+            {/* Image Section - aspect-square mobile e full width nibe */}
+            <div className="relative aspect-square md:aspect-[5/4] overflow-hidden bg-gray-20">
+              <div className='justify-center flex w-full h-full '><img 
+                src={p.imgUrl} 
+                alt={p.title} 
+                className="md:w-[80%] w-full h-full  transition-transform duration-500 group-hover:scale-110" 
+              /></div>
+              <div 
+                onClick={() => router.push(`/products/${p._id}`)}
+                className="absolute inset-0 bg-black/5 flex items-center justify-center md:opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              >
                 
-                <Link href={`/products/${p._id}`} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/5 transition backdrop-blur-[1px]">
-                   <div className="bg-white p-3 rounded-full shadow-xl text-black active:scale-90 transition">
-                     <Eye size={20}/>
-                   </div>
-                </Link>
-              </div>
-
-              <div className="mt-3 px-1">
-                <p className="text-[10px] font-bold text-orange-600 uppercase tracking-tight leading-none">{p.category}</p>
-                <h3 className="text-sm font-extrabold text-gray-900 mt-1 line-clamp-1 leading-tight uppercase">{p.title}</h3>
-                
-                <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-50">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-400 font-bold leading-none">Price</span>
-                    <p className="text-lg font-black text-gray-950 tracking-tighter leading-none">{p.price} টাকা</p>
-                  </div>
-
-                  <button 
-                    onClick={() => handleActionClick(p._id, p.title)}
-                    className="bg-black text-white p-3 rounded-xl hover:bg-orange-600 transition-all shadow-lg active:scale-95"
-                  >
-                    {addingId === p._id ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : (
-                      <FaShoppingCart size={18} />
-                    )}
-                  </button>
-                </div>
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* Content Section - Padding komano hoyeche */}
+            <div className="p-2 md:p-3">
+              <p className="text-[9px] text-orange-600 font-bold uppercase mb-0.5">{p.category}</p>
+              <h3 className="text-xs md:text-sm font-bold text-gray-800 truncate mb-2">{p.title}</h3>
+              
+              <div className="flex items-center justify-between gap-1">
+                <p className="text-sm md:text-lg font-black text-gray-950 truncate">৳{p.price}</p>
+                <button 
+                  onClick={() => handleCartAction(p._id)}
+                  className="bg-black text-white w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-orange-600 active:scale-90 transition-all shadow-sm"
+                >
+                  {addingId === p._id ? <Loader2 size={14} className="animate-spin" /> : <ShoppingCart size={16} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {products.length === 0 && (
+        <p className="text-center py-20 text-gray-400 text-sm">No products found.</p>
       )}
     </div>
   );
