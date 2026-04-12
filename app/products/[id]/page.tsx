@@ -160,13 +160,14 @@ export default function SingleProductPage() {
                   onClick={() => setMainImg(img!)}
                   className={`w-20 h-24 rounded-xl overflow-hidden cursor-pointer border-2 transition ${mainImg === img ? 'border-orange-600' : 'border-transparent opacity-60'}`}
                 >
-                  <img src={img} alt="thumb" className="w-full h-full object-cover" />
+                  <img src={img} alt="thumb" className="w-full h-auto mt-4 " />
                 </div>
               ))}
             </div>
             {/* Main Image */}
             <div className="flex-1 bg-gray-50 rounded-[2rem] overflow-hidden border border-slate-100">
-              <img src={mainImg} alt={product.title} className="w-full h-[500px] md:h-[650px] object-cover hover:scale-105 transition duration-700" />
+              <img src={mainImg} alt={product.title} className="w-full h-full 
+              md:h-full object-cover hover:scale-105 transition duration-700" />
             </div>
           </div>
 

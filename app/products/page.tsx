@@ -116,7 +116,7 @@ export default function ProductDisplayPage() {
               <div className='justify-center flex w-full h-full '><img 
                 src={p.imgUrl} 
                 alt={p.title} 
-                className="md:w-[80%] w-full h-full  transition-transform duration-500 group-hover:scale-110" 
+                className="md:w-[75%] w-[90%] h-full  transition-transform duration-500 group-hover:scale-110" 
               /></div>
               <div 
                 onClick={() => router.push(`/products/${p._id}`)}
