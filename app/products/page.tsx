@@ -113,17 +113,23 @@ export default function ProductDisplayPage() {
             
             {/* Image Section - aspect-square mobile e full width nibe */}
             <div className="relative aspect-square md:aspect-[5/4] overflow-hidden bg-gray-20">
-              <div className='justify-center flex w-full h-full '><img 
+              <div className='justify-center flex w-full h-full '>
+
+                <img 
                 src={p.imgUrl} 
                 alt={p.title} 
                 className="md:w-[75%] w-[90%] h-full  transition-transform duration-500 group-hover:scale-110" 
-              /></div>
+              />
+
+              </div>
+
               <div 
                 onClick={() => router.push(`/products/${p._id}`)}
                 className="absolute inset-0 bg-black/5 flex items-center justify-center md:opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               >
                 
               </div>
+              
             </div>
 
             {/* Content Section - Padding komano hoyeche */}
