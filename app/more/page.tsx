@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { FaWhatsapp } from "react-icons/fa6";
+
 import { 
   ShoppingBag, 
   Truck, 
@@ -49,7 +51,8 @@ export default function InfoPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               { icon: <ShoppingBag />, title: "পণ্য বাছাই", desc: "আপনার পছন্দের পণ্যটি কার্টে যোগ করুন।" },
-              { icon: <Info />, title: "তথ্য প্রদান", desc: "দাম দেখে চেকআউট করে সঠিক নাম, ঠিকানা ও মোবাইল নম্বর দিন।" },
+              { icon: <Info />, title: "তথ্য প্রদান", desc: "দাম দেখে চেকআউট করে সঠিক নাম, ঠিকানা ও মোবাইল নম্বর দিন। এরপর অর্ডার করুন" },
+              { icon: <FaWhatsapp size={24} />, title: "হোয়াটসআপে মেসেজ", desc: "অর্ডার করা শেষ হলে হোয়াটসআপে মেসেজ দিয়ে আপনার ডিজাইন দিন" },
               { icon: <CreditCard />, title: "পেমেন্ট", desc: "বিকাশ বা নগদে অগ্রীম পেমেন্ট সম্পন্ন করুন। (৫০%)" },
               { icon: <Truck />, title: "ডেলিভারি", desc: "২৪-৪৮ ঘণ্টার মধ্যে পণ্য পৌঁছে যাবে আপনার হাতে।" },
             ].map((step, index) => (
@@ -78,7 +81,10 @@ export default function InfoPage() {
               <h2 className="text-xl font-bold">অর্ডারের নিয়মাবলী</h2>
             </div>
             <ul className="space-y-4 text-gray-600">
-              <li className="flex gap-2">🔹 অর্ডারের সময় নূন্যতম ৫০% অগ্রীম প্রদান করতে হবে।</li>
+               <li className="flex gap-2">🔹 অর্ডার করার পরে ওয়েবসাইটের ডান পাশের ওয়াটসআপ আইকনে ক্লিক করে 
+                
+                আমাদের সাথে যোগাযোগ করে আপনার ডিজাইনের তথ্য দিন</li>
+              <li className="flex gap-2">🔹 অর্ডারের পরে নূন্যতম ৫০% অগ্রীম প্রদান করতে হবে।</li>
               <li className="flex gap-2">🔹 ভুল তথ্য দিলে অর্ডার বাতিল বলে গণ্য হতে পারে।</li>
               <li className="flex gap-2">🔹 কোনো পণ্য স্টকে না থাকলে আমরা ১২ ঘণ্টার মধ্যে জানাব।</li>
             </ul>

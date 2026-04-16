@@ -185,7 +185,7 @@ if (loading) return (
                   <div className="flex-1 text-center sm:text-left">
                     <h3 className="font-semibold text-gray-800">{item.post.title}</h3>
                     <p className="text-sm text-gray-400">Size: {item.post.size}</p>
-                    <p className="text-gray-900 font-bold">${item.post.price.toFixed(2)}</p>
+                    <p className="text-gray-900 font-bold">প্রতি পিস: {item.post.price} টাকা</p>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -221,29 +221,29 @@ if (loading) return (
                   {/* Detailed breakdown: Price x Quantity */}
                   {cartItems.map((item) => (
                     <div key={item.post._id} className="flex justify-between text-sm text-gray-600">
-                      <span className="truncate max-w-[150px]">{item.post.title} ({""}x{item.quantity})</span>
-                      <span>${(item.post.price * item.quantity).toFixed(2)}</span>
+                      <span className="truncate max-w-[150px]">{item.post.title} - {""}{item.quantity} পিস </span>
+                      <span>{(item.post.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
 
                   <div className="pt-4 border-t space-y-2">
                     <div className="flex justify-between text-gray-600">
-                      <span>Total Items Price</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>মোট দাম</span>
+                      <span>{subtotal} টাকা</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
-                      <span>Shipping Fee</span>
-                      <span className="text-green-600 font-medium">{deliveryFee.toFixed(2)}</span>
+                      <span>ডেলিভারি চার্জ</span>
+                      <span className="text-green-600 font-medium">{deliveryFee} টাকা</span>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t flex justify-between items-center">
-                    <span className="text-lg font-bold text-gray-800">Total Payable</span>
-                    <span className="text-2xl font-bold text-orange-600">{(subtotal + deliveryFee).toFixed(2)}</span>
+                    <span className="text-lg font-bold text-gray-800">সর্বমোট দাম</span>
+                    <span className="text-2xl font-bold text-orange-600">{subtotal + deliveryFee} টাকা</span>
                   </div>
 
                   <button onClick={handleCheckout} className="w-full mt-6 py-4 bg-orange-600 text-white rounded-lg font-bold hover:bg-orange-700 transition">
-                    Proceed to Checkout
+                    অর্ডার প্লেস করুন
                   </button>
                 </div>
               </div>

@@ -81,10 +81,11 @@ Address: ${order.shippingAddress}
   </tbody>
   
   <tfoot>
+  <tr style="background: #fafafa; font-weight: bold;">ডেলিভারি চার্জ: 80 taka</tr>
     <tr style="background: #fafafa; font-weight: bold;">
       <td colspan="2" style="padding: 10px; border: 1px solid #ddd; text-align: right;">Grand Total:</td>
       <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: #ea580c; font-size: 16px;">
-        ${order.totalAmount} taka
+        ${order.totalAmount} টাকা
       </td>
     </tr>
   </tfoot>

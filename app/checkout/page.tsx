@@ -87,7 +87,7 @@ export default function CheckoutPage() {
                   <input 
                     required
                     type="tel" 
-                    placeholder="017XXXXXXXX"
+                    placeholder="মোবাইল নম্বর লিখুন..."
                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-slate-100 rounded-2xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all font-bold text-gray-900"
                     onChange={(e) => setFormData({...formData, mobile: e.target.value})}
                   />
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Full Shipping Address</label>
                 <textarea 
                   required
-                  placeholder="House no, Road, Area, City..."
+                  placeholder="ঠিকানা লিখুন..."
                   rows={4}
                   className="w-full p-5 bg-gray-50 border border-slate-100 rounded-2xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all font-bold text-gray-900 resize-none"
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
@@ -111,7 +111,7 @@ export default function CheckoutPage() {
                   className="w-full bg-gray-950 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-orange-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-gray-200"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <ShoppingBag size={20} />}
-                  Confirm Order {(orderData.totalAmount).toFixed(2)})
+                  Confirm Order ({(orderData.totalAmount)} টাকা)
                 </button>
               </div>
             </form>
@@ -120,7 +120,7 @@ export default function CheckoutPage() {
           {/* Right: Order Summary (5 Columns) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-              <h3 className="text-xl font-black text-gray-950 tracking-tight mb-6">Order Summary</h3>
+              <h3 className="text-xl font-black text-gray-950 tracking-tight mb-6">অর্ডার সামারি</h3>
               
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {orderData.items.map((item: any, idx: number) => (
@@ -130,26 +130,26 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-extrabold text-sm text-gray-900 truncate uppercase tracking-tighter">{item.title}</h4>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase">Qty: {item.quantity} × ${item.price}</p>
+                      <p className="text-[13px] font-bold text-gray-500 uppercase">{item.quantity} পিস × {item.price} টাকা</p>
                     </div>
-                    <p className="font-black text-sm text-gray-950">${(item.quantity * item.price).toFixed(2)}</p>
+                    <p className="font-black text-md text-gray-950">{(item.quantity * item.price)}</p>
                   </div>
                 ))}
               </div>
 
               <div className="mt-8 pt-6 border-t border-dashed border-slate-200 space-y-3">
-                <div className="flex justify-between text-xs font-bold text-gray-400 uppercase">
-                  <span>Subtotal</span>
-                  <span className="text-gray-950">${(orderData.totalAmount - 80).toFixed(2)}</span>
+                <div className="flex justify-between text-md font-bold text-gray-400 uppercase">
+                  <span>সর্বমোট দাম</span>
+                  <span className="text-gray-950">{(orderData.totalAmount - 80)} টাকা</span>
                 </div>
-                <div className="flex justify-between text-xs font-bold text-gray-400 uppercase">
-                  <span>Shipping</span>
-                  <span className="text-green-600 tracking-widest">80 taka</span>
+                <div className="flex justify-between text-md font-bold text-gray-400 uppercase">
+                  <span>ডেলিভারি চার্জ</span>
+                  <span className="text-green-600 tracking-widest">80 টাকা</span>
                 </div>
-                <div className="flex justify-between items-end pt-2">
-                  <span className="text-sm font-black text-gray-950 uppercase">Grand Total</span>
-                  <span className="text-3xl font-black text-orange-600 tracking-tighter">
-                    ${orderData.totalAmount.toFixed(2)}</span>
+                <div className="flex justify-between items-end pt-2 border-t border-slate-200">
+                  <span className="text-md font-black text-gray-950 uppercase">সর্বমোট দাম</span>
+                  <span className="text-3xl font-black text-orange-600 tracking-tighter relative top-2">
+                    {orderData.totalAmount} <span className='relative top-1'>টাকা</span></span>
                 </div>
               </div>
             </div>
