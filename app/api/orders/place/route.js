@@ -36,21 +36,55 @@ export async function POST(req) {
       paymentStatus: 'Cash on Delivery'
     });
 
-    // ২. ইউজারের ডাটা আপডেট করুন (কার্ট খালি করা এবং অর্ডার লিস্টে আইডি পুশ করা)
-    // আমরা একসাথে $set (কার্ট খালি) এবং $push (অর্ডার আইডি সেভ) করতে পারি
+    // ২. ইউজারের ডাটা আপডেট করুন
     await User.findByIdAndUpdate(userId, { 
       $set: { cart: [] },
       $push: { orders: newOrder._id } 
     });
 
+    // --- ৩. ফেসবুক পিক্সেল (Conversions API) ট্র্যাকিং শুরু ---
+    try {
+      const pixelId = process.env.FB_PIXEL_ID;
+      const accessToken = process.env.FB_ACCESS_TOKEN;
+      const fbUrl = `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${accessToken}`;
+
+      // এটি ব্যাকগ্রাউন্ডে চলবে, ইউজারের রেসপন্স আটকাবে না
+      fetch(fbUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: [{
+            event_name: 'Purchase',
+            event_time: Math.floor(Date.now() / 1000),
+            action_source: 'website',
+            user_data: {
+              // ফোন নম্বর সরাসরি পাঠানো যায়, ফেসবুক সেটাকে নিজে ম্যাচ করে নেয়
+              ph: [customerInfo.mobile], 
+              client_ip_address: req.headers.get('x-forwarded-for') || '127.0.0.1',
+              client_user_agent: req.headers.get('user-agent'),
+            },
+            custom_data: {
+              value: Number(totalAmount),
+              currency: 'BDT',
+              content_type: 'product',
+              num_items: items.length
+            }
+          }]
+        })
+      }).catch(err => console.error("FB Conversion API Error:", err));
+    } catch (fbErr) {
+      console.error("FB Tracking Setup Error:", fbErr);
+    }
+    // --- ফেসবুক ট্র্যাকিং শেষ ---
+
     return NextResponse.json({ 
       success: true, 
-      message: "অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে!", 
+      message: "অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে!", 
       orderId: newOrder._id 
     }, { status: 201 });
 
   } catch (error) {
     console.error("Order API Error:", error);
-    return NextResponse.json({ success: false, message: "সার্ভারে সমস্যা হয়েছে।" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "সার্ভারে সমস্যা হয়েছে।" }, { status: 500 });
   }
 }
