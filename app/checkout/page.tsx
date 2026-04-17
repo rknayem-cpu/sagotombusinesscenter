@@ -9,7 +9,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ mobile: '', address: '' });
+  const [formData, setFormData] = useState({ name: '', mobile: '', address: '' });
 
   useEffect(() => {
     // LocalStorage থেকে কার্ট ডাটা চেক করা
@@ -81,6 +81,21 @@ export default function CheckoutPage() {
             </h2>
             
             <form onSubmit={handlePlaceOrder} className="space-y-6">
+
+<div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Mobile Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="নাম লিখুন..."
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-slate-100 rounded-2xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all font-bold text-gray-900"
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Active Mobile Number</label>
                 <div className="relative">

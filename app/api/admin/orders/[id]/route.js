@@ -20,9 +20,15 @@ export async function PATCH(req, { params }) {
     const userId = cookieStore.get('userId')?.value;
 
     // ২. ডাটাবেজে স্ট্যাটাস আপডেট করা
+   const timestampField = `${status.toLowerCase()}At`; 
+    // যেমন: status "Shipped" হলে ফিল্ড হবে "shippedAt"
+
     const updatedOrder = await Order.findByIdAndUpdate(
       id,
-      { status: status },
+      { 
+        status: status,
+        $set: { [`statusHistory.${timestampField}`]: new Date() } // এখানে টাইম সেভ হচ্ছে
+      },
       { new: true }
     );
 

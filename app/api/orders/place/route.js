@@ -16,7 +16,8 @@ export async function POST(req) {
     const body = await req.json();
     const { items, totalAmount, customerInfo } = body;
 
-    if (!items || items.length === 0 || !customerInfo.mobile || !customerInfo.address) {
+
+    if (!items || items.length === 0 || !customerInfo.mobile || !customerInfo.address || !customerInfo.name) {
       return NextResponse.json({ success: false, message: "সবগুলো তথ্য সঠিকভাবে প্রদান করুন।" }, { status: 400 });
     }
 
@@ -32,6 +33,7 @@ export async function POST(req) {
       totalAmount: Number(totalAmount),
       shippingAddress: customerInfo.address,
       phone: customerInfo.mobile,
+      name: customerInfo.name, // যদি নাম না থাকে তবে ডিফল্ট মান
       status: 'Pending',
       paymentStatus: 'Cash on Delivery'
     });

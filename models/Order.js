@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Shipping address is required'],
   },
+  name: {
+    type: String,
+    required: [true, 'Name is required'],
+  },
   phone: {
     type: String,
     required: [true, 'Mobile number is required'],
@@ -40,6 +44,13 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: 'Pending',
   },
+  // Order Model এ এগুলো যোগ করুন
+statusHistory: {
+  pendingAt: { type: Date, default: Date.now },
+  processingAt: { type: Date },
+  shippedAt: { type: Date },
+  deliveredAt: { type: Date },
+}
 }, { 
   timestamps: true // এটি অর্ডার দেওয়ার সময় (createdAt) ট্র্যাক করবে
 });

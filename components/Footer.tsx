@@ -1,6 +1,8 @@
+"use client"
 import { FaFacebookF, FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
-
+import {useRouter} from 'next/navigation';
 export default function Footer() {
+  const router = useRouter();
   const socialLinks = [
     { icon: <FaFacebookF />, hover: "hover:text-blue-600", href: "https://www.facebook.com/Sagotombuisnesscenter" },
     { icon: <FaWhatsapp />, hover: "hover:text-green-500", href: "https://wa.me/8801997219858" },
@@ -42,7 +44,8 @@ export default function Footer() {
         {/* Copyright */}
         <div className="md:col-span-3 border-t border-slate-200/50 mt-6 pt-6 text-center">
           <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
-            © {new Date().getFullYear()} স্বত্ব সংরক্ষিত — Sagotom Business Center
+            © {new Date().getFullYear()} স্বত্ব সংরক্ষিত — Sagotom Business <span 
+            onDoubleClick={()=>router.push('/admin')} >Center</span>
           </p>
         </div>
       </div>
