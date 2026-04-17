@@ -35,6 +35,9 @@ export async function POST(req) {
       phone: customerInfo.mobile,
       name: customerInfo.name, // যদি নাম না থাকে তবে ডিফল্ট মান
       status: 'Pending',
+      statusHistory: {
+    pendingAt: new Date(), // এটি ফিক্সড হয়ে থাকবে
+  },
       paymentStatus: 'Cash on Delivery'
     });
 

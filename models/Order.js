@@ -46,7 +46,7 @@ const orderSchema = new mongoose.Schema({
   },
   // Order Model এ এগুলো যোগ করুন
 statusHistory: {
-  pendingAt: { type: Date, default: Date.now },
+  pendingAt: { type: Date },
   processingAt: { type: Date },
   shippedAt: { type: Date },
   deliveredAt: { type: Date },

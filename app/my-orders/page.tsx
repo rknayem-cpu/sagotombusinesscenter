@@ -60,7 +60,7 @@ return (
             typeof order === 'object' && (
               <div key={order._id} className="border-2 border-slate-100 rounded-[2rem] p-6 flex flex-col hover:border-blue-600 transition-all duration-300 bg-white group">
                 <div onClick={()=>router.push(`/order-status/${order._id}`)} className='relative bottom-3 text-blue-500 
-                hover:underline active:underline cursor-pointer'>অর্ডারের অবস্থা দেখুন</div>
+                hover:underline active:underline cursor-pointer select-none'>অর্ডারের অবস্থা দেখুন</div>
                 {/* Header: ID & Status */}
                 <div className="flex justify-between items-start mb-6">
                   <div className="bg-slate-50 px-3 py-1 rounded-lg">
