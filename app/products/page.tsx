@@ -103,7 +103,7 @@ export default function ProductDisplayPage() {
       {/* Header */}
       <div className="flex justify-between items-end mb-6 border-b pb-3">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 uppercase tracking-tighter">New Drops</h2>
-        <Link href="/teri" className="text-xs font-bold text-orange-600 border-b border-orange-600">VIEW ALL</Link>
+        <Link href="/categories" className="text-xs font-bold text-orange-600 border-b border-orange-600">VIEW ALL</Link>
       </div>
 
       {/* Product Grid - Mobile e gap komano hoyeche jate chobi boro dekhay */}

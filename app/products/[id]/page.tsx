@@ -45,6 +45,9 @@ export default function SingleProductPage() {
       if (res.ok) {
         window.dispatchEvent(new Event('cartUpdated'));
         Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Added to bag', showConfirmButton: false, timer: 1500 });
+      }else {
+Swal.fire({ toast: true, position: 'top-start', icon: 'error', title: 'please login frist!', 
+          showConfirmButton: false, timer: 1000 });
       }
     } finally { setAdding(false); }
   };

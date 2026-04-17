@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import connectDB from '@/db';
 import User from '@/models/User';
+import Order from '@/models/Order';
 
+export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     connectDB();

@@ -49,7 +49,7 @@ export default function Navbar() {
       icon: isLoggedIn ? <IoPersonOutline /> : <IoLogInOutline /> 
     },
     { name: "পন্য", href: "/products", icon: <IoBagHandleOutline /> },
-    { name: "বিভাগ", href: "/teri", icon: <IoGridOutline /> },
+    { name: "বিভাগ", href: "/categories", icon: <IoGridOutline /> },
     { name: "আরো", href: "/more", icon: <IoEllipsisHorizontalCircleOutline /> },
   ];
 
