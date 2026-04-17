@@ -102,21 +102,37 @@ Address: ${updatedOrder.shippingAddress}
   }
 }
 
+
+
 // অর্ডার ডিলিট করার জন্য (আগের মতোই থাকছে)
 export async function DELETE(req, { params }) {
   try {
-     connectDB();
+   connectDB(); // await নিশ্চিত করুন
     const { id } = params;
     const cookieStore = cookies();
-const userId = cookieStore.get('userId')?.value;
-const user = await User.findById(userId);
+    const userId = cookieStore.get('userId')?.value;
 
-    // ইউজার না পাওয়া গেলে অথবা ইউজারের অর্ডার লিস্টে এই অর্ডার না থাকলে 403 Forbidden রেসপন্স দিন
-    if (!user || !user.orders.includes(id)) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 403 });
+    }
+
+    // ১. চেক করার সময় String এ কনভার্ট করে চেক করুন
+    const hasOrder = user.orders.some(orderId => orderId.toString() === id);
+
+    if (!hasOrder) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }
-     user.orders = user.orders.filter(orderId => orderId.toString() !== id);
+
+    // ২. ফিল্টার করার সময়ও toString() ব্যবহার করুন
+    user.orders = user.orders.filter(orderId => orderId.toString() !== id);
+    
+    // ৩. অনেক সময় সরাসরি অ্যারে আপডেট করলে Mongoose বুঝতে পারে না, তাই explicit মার্কিং (ঐচ্ছিক কিন্তু নিরাপদ)
+    user.markModified('orders'); 
     await user.save();
+
+    // ৪. অর্ডার ডিলিট
     const deletedOrder = await Order.findByIdAndDelete(id);
 
     if (!deletedOrder) {
@@ -125,6 +141,7 @@ const user = await User.findById(userId);
 
     return NextResponse.json({ success: true, message: "Order deleted successfully" });
   } catch (error) {
+    console.error(error); // এরর লগ করলে সমস্যা ধরতে সুবিধা হবে
     return NextResponse.json({ success: false, message: "Delete failed" }, { status: 500 });
   }
 }

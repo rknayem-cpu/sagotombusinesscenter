@@ -22,6 +22,7 @@ export default function CheckoutPage() {
   }, [router]);
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
+    
     e.preventDefault();
     
     if (!formData.mobile || !formData.address) {
@@ -108,7 +109,9 @@ export default function CheckoutPage() {
               <div className="pt-4">
                 <button 
                   disabled={loading}
-                  className="w-full bg-gray-950 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-orange-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-gray-200"
+                  className="w-full bg-gray-950 text-white py-5 rounded-2xl font-black 
+                  text-sm uppercase tracking-[0.2em] hover:bg-orange-600 transition-all flex 
+                  items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-gray-200"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <ShoppingBag size={20} />}
                   Confirm Order ({(orderData.totalAmount)} টাকা)
