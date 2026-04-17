@@ -22,7 +22,7 @@ const productImages = [
 
 
 const services = [
-  { icon: <FiUserCheck />, text: "প্রিভিসি আইডি কার্ড" },
+  { icon: <FiUserCheck />, text: "পিভিসি আইডি কার্ড" },
   { icon: <FiLayers />, text: "গেঞ্জি ও ক্যাপ প্রিন্ট" },
   { icon: <FiPrinter />, text: "মগ প্রিন্ট" },
   { icon: <FiAward />, text: "ক্রেস্ট প্রিন্ট" }
