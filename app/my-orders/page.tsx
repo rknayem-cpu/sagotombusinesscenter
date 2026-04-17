@@ -67,9 +67,17 @@ return (
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">ID</p>
                     <p className="font-bold text-xs">#{order._id.slice(-8).toUpperCase()}</p>
                   </div>
-                  <span className="text-[10px] font-black uppercase text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100">
-                    {order.status}
-                  </span>
+             <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-xl border ${
+    order.status?.toLowerCase() === 'pending' 
+      ? 'text-orange-600 bg-orange-50 border-orange-100' 
+      : order.status?.toLowerCase() === 'shipped' 
+      ? 'text-blue-600 bg-blue-50 border-blue-100' 
+      : order.status?.toLowerCase() === 'delivered' 
+      ? 'text-green-600 bg-green-50 border-green-100' 
+      : 'text-slate-600 bg-slate-50 border-slate-100' // অন্য কোনো স্ট্যাটাস হলে এই কালার পাবে
+  }`}>
+    {order.status}
+</span>
                 </div>
 
                 {/* Items Section with Scroll (Max 3 items visible) */}
