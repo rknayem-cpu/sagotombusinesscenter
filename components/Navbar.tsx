@@ -6,7 +6,7 @@ import {
   IoGridOutline, IoEllipsisHorizontalCircleOutline, 
   IoPersonOutline, IoLogInOutline 
 } from "react-icons/io5";
-
+import { MdTrackChanges } from "react-icons/md";
 import CartIcon from "@/components/CartIcon"; 
 
 export default function Navbar() {
@@ -51,6 +51,7 @@ export default function Navbar() {
     { name: "পন্য", href: "/products", icon: <IoBagHandleOutline /> },
     { name: "বিভাগ", href: "/categories", icon: <IoGridOutline /> },
     { name: "আরো", href: "/more", icon: <IoEllipsisHorizontalCircleOutline /> },
+    { name: "ট্র্যাক অর্ডার", href: "/track", icon: <MdTrackChanges /> },  
   ];
 
   const toggleSidebar = () => setIsOpen(!isOpen);

@@ -5,7 +5,8 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // <-- Eita oboshoy false hote hobe jate Guest order ney
+    default: null    // Login na thakle null save hobe
   },
   // অর্ডারের আইটেমগুলো (Array of objects)
   items: [
@@ -43,6 +44,12 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     default: 'Pending',
+  },
+ orderId: {
+    type: String,
+    required: true,
+    unique: true, // একই আইডি যেন দুইবার না আসে
+    index: true   // এটি দিয়ে সার্চ করা দ্রুত হবে
   },
   // Order Model এ এগুলো যোগ করুন
 statusHistory: {

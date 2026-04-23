@@ -10,6 +10,8 @@ interface Order {
   items: any[];
   totalAmount: number;
   shippingAddress: string;
+  name: string;
+  orderId: string;
   phone: string;
   createdAt: string;
 }
@@ -87,7 +89,7 @@ const itemsList = order.items
 
 // ২. QR Data স্ট্রিং তৈরি করা
 const qrData = `
-Order ID: ${order._id.slice(-8).toUpperCase()}
+Order ID: ${order.orderId}
 Date: ${new Date(order.createdAt).toLocaleDateString()}
 Items Detail:
 ${itemsList}
@@ -119,10 +121,10 @@ return (
           <div className="mt-10 p-5 bg-gray-50 rounded-2xl border border-dashed border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-left">
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Your Order ID</span>
-              <p className="font-mono font-bold text-gray-950 text-sm md:text-base">{order._id}</p>
+              <p className="font-mono font-bold text-gray-950 text-sm md:text-base">{order.orderId}</p>
             </div>
             <button 
-              onClick={() => copyToClipboard(order._id)}
+              onClick={() => copyToClipboard(order.orderId)}
               className="flex items-center gap-2 bg-gray-950 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all active:scale-95"
             >
               <Copy size={14} /> Copy ID

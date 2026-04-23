@@ -8,22 +8,26 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const userId = cookies().get('userId')?.value;
-    if (!userId) {
-      return NextResponse.json({ success: false, message: "অর্ডার করতে লগইন করুন।" }, { status: 401 });
-    }
+    // userId optional rakhchi jate Guest user order korte pare
+    const userId = cookies().get('userId')?.value || null;
 
     const body = await req.json();
     const { items, totalAmount, customerInfo } = body;
 
-
-    if (!items || items.length === 0 || !customerInfo.mobile || !customerInfo.address || !customerInfo.name) {
+    // Validation
+    if (!items || items.length === 0 || !customerInfo?.mobile || !customerInfo?.address || !customerInfo?.name) {
       return NextResponse.json({ success: false, message: "সবগুলো তথ্য সঠিকভাবে প্রদান করুন।" }, { status: 400 });
     }
 
-    // ১. প্রথমে অর্ডার তৈরি করুন
-    const newOrder = await Order.create({
-      user: userId,
+    const generateShortId = () => {
+  // ১০০০১০ থেকে ৯৯৯৯৯০ পর্যন্ত একটি র‍্যান্ডম নাম্বার জেনারেট করা
+  const randomDigits = Math.floor(100000 + Math.random() * 900000);
+  return `SBC-${randomDigits}`;
+};
+    // ১. অর্ডার অবজেক্ট তৈরি
+    const orderPayload = {
+      // User login thakle ID jabe, na thakle null thakbe (Guest Order)
+      user: userId, 
       items: items.map(item => ({
         title: item.title,
         imgUrl: item.imgUrl,
@@ -33,63 +37,72 @@ export async function POST(req) {
       totalAmount: Number(totalAmount),
       shippingAddress: customerInfo.address,
       phone: customerInfo.mobile,
-      name: customerInfo.name, // যদি নাম না থাকে তবে ডিফল্ট মান
+      name: customerInfo.name,
       status: 'Pending',
+      orderId: generateShortId(), // Unique Order ID
       statusHistory: {
-    pendingAt: new Date(), // এটি ফিক্সড হয়ে থাকবে
-  },
+        pendingAt: new Date(),
+      },
       paymentStatus: 'Cash on Delivery'
-    });
+    };
 
-    // ২. ইউজারের ডাটা আপডেট করুন
-    await User.findByIdAndUpdate(userId, { 
-      $set: { cart: [] },
-      $push: { orders: newOrder._id } 
-    });
+    const newOrder = await Order.create(orderPayload);
 
-    // --- ৩. ফেসবুক পিক্সেল (Conversions API) ট্র্যাকিং শুরু ---
+    // ২. ইউজার লগইন করা থাকলে তার ডাটা আপডেট করুন
+    if (userId) {
+      try {
+        await User.findByIdAndUpdate(userId, { 
+          $set: { cart: [] }, // DB cart clear (jodi thake)
+          $push: { orders: newOrder._id } 
+        });
+      } catch (userErr) {
+        console.error("User model update error:", userErr);
+        // User update na holeo order cancel korar dorkar nai
+      }
+    }
+
+    // --- ৩. ফেসবুক পিক্সেল (Conversions API) ---
+    // (Pixel logic exact ager motoi thakbe)
     try {
       const pixelId = process.env.FB_PIXEL_ID;
       const accessToken = process.env.FB_ACCESS_TOKEN;
-      const fbUrl = `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${accessToken}`;
-
-      // এটি ব্যাকগ্রাউন্ডে চলবে, ইউজারের রেসপন্স আটকাবে না
-      fetch(fbUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          data: [{
-            event_name: 'Purchase',
-            event_time: Math.floor(Date.now() / 1000),
-            action_source: 'website',
-            user_data: {
-              // ফোন নম্বর সরাসরি পাঠানো যায়, ফেসবুক সেটাকে নিজে ম্যাচ করে নেয়
-              ph: [customerInfo.mobile], 
-              client_ip_address: req.headers.get('x-forwarded-for') || '127.0.0.1',
-              client_user_agent: req.headers.get('user-agent'),
-            },
-            custom_data: {
-              value: Number(totalAmount),
-              currency: 'BDT',
-              content_type: 'product',
-              num_items: items.length
-            }
-          }]
-        })
-      }).catch(err => console.error("FB Conversion API Error:", err));
+      if (pixelId && accessToken) {
+        const fbUrl = `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${accessToken}`;
+        fetch(fbUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: [{
+              event_name: 'Purchase',
+              event_time: Math.floor(Date.now() / 1000),
+              action_source: 'website',
+              user_data: {
+                ph: [customerInfo.mobile], 
+                client_ip_address: req.headers.get('x-forwarded-for') || '127.0.0.1',
+                client_user_agent: req.headers.get('user-agent'),
+              },
+              custom_data: {
+                value: Number(totalAmount),
+                currency: 'BDT',
+                content_type: 'product',
+                num_items: items.length
+              }
+            }]
+          })
+        }).catch(err => console.error("FB CAPI Error:", err));
+      }
     } catch (fbErr) {
-      console.error("FB Tracking Setup Error:", fbErr);
+      console.error("FB Tracking Error:", fbErr);
     }
-    // --- ফেসবুক ট্র্যাকিং শেষ ---
 
     return NextResponse.json({ 
       success: true, 
       message: "অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে!", 
-      orderId: newOrder._id 
+      orderId: newOrder.orderId // Client ke orderId pathano jate tar status check korte pare
     }, { status: 201 });
 
   } catch (error) {
     console.error("Order API Error:", error);
-    return NextResponse.json({ success: false, message: "সার্ভারে সমস্যা হয়েছে।" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "সার্ভারে সমস্যা হয়েছে।" }, { status: 500 });
   }
 }

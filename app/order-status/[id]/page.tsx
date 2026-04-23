@@ -127,7 +127,7 @@ const OrderStatus = () => {
   const currentStepIndex = steps.findIndex(s => s.label === order.status);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white shadow-2xl rounded-2xl my-10 mt-24 border border-gray-100">
+    <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white  rounded-2xl my-10 mt-24 border border-gray-100">
       <div className="mb-10 text-center md:text-left">
         <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">অর্ডার ট্র্যাকিং</h2>
         <p className="text-gray-500 mt-2">অর্ডার আইডি: <span className="font-mono text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">{id}</span></p>
@@ -186,7 +186,7 @@ const OrderStatus = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
           <div className="flex justify-between items-center py-2 border-b border-gray-200 md:border-none">
             <span className="text-gray-500 font-medium">ক্রেতার নাম</span>
-            <span className="font-semibold text-gray-800">{order.user?.name || "গেস্ট ইউজার"}</span>
+            <span className="font-semibold text-gray-800">{order.name || "গেস্ট ইউজার"}</span>
           </div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200 md:border-none">
             <span className="text-gray-500 font-medium">মোট পরিমাণ</span>
