@@ -44,7 +44,7 @@ export default function OrderSuccessPage() {
 
 const sendEmail = async (orderDetail: any) => {
   // ১. একবার ইমেইল গেলে যেন বারবার না যায় (রিফ্রেশ করলে যেন আবার না যায়)
-  const isSent = sessionStorage.getItem(`sent_${orderDetail._id}`);
+  const isSent = sessionStorage.getItem(`sent_${orderDetail.orderId}`);
   if (isSent) return;
 
   try {
@@ -56,7 +56,7 @@ const sendEmail = async (orderDetail: any) => {
     });
     
     // ৩. সেশন স্টোরেজে সেভ করে রাখা যে ইমেইল পাঠানো হয়েছে
-    sessionStorage.setItem(`sent_${orderDetail._id}`, 'true');
+    sessionStorage.setItem(`sent_${orderDetail.orderId}`, 'true');
   } catch (err) {
     console.error("Email API Error:", err);
   }

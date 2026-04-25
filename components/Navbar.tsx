@@ -43,15 +43,16 @@ export default function Navbar() {
   // 3. navItems ke ekhon dynamic kora holo jate isLoggedIn change hole menu change hoy
   const navItems = [
     { name: "হোম", href: "/", icon: <IoHomeOutline /> },
-    { 
-      name: isLoggedIn ? "প্রোফাইল" : "লগইন", 
-      href: isLoggedIn ? "/profile" : "/login", 
-      icon: isLoggedIn ? <IoPersonOutline /> : <IoLogInOutline /> 
-    },
+    
     { name: "পন্য", href: "/products", icon: <IoBagHandleOutline /> },
     { name: "বিভাগ", href: "/categories", icon: <IoGridOutline /> },
     { name: "আরো", href: "/more", icon: <IoEllipsisHorizontalCircleOutline /> },
     { name: "ট্র্যাক অর্ডার", href: "/track", icon: <MdTrackChanges /> },  
+    { 
+      name: isLoggedIn ? "প্রোফাইল" : "লগইন", 
+      href: isLoggedIn ? "/profile" : "/login", 
+      icon: isLoggedIn ? <IoPersonOutline /> : <IoLogInOutline /> 
+    }
   ];
 
   const toggleSidebar = () => setIsOpen(!isOpen);

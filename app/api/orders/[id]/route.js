@@ -12,12 +12,12 @@ export async function GET(req, { params }) {
 
     // ৩. আইডি দিয়ে অর্ডারটি খুঁজে বের করা
     // এখানে .lean() ব্যবহার করা হয়েছে দ্রুত পারফরম্যান্সের জন্য
-    const order = await Order.findById(id);
+    const order = await Order.findOne({ orderId: id });
 
-    // ৪. অর্ডার না পাওয়া গেলে ৪-০-৪ এরর
+    // ৪. অর্ডার না পাওয়া গেলে ৪-০-৪ এরর
     if (!order) {
       return NextResponse.json(
-        { success: false, message: "অর্ডারটি পাওয়া যায়নি।" },
+        { success: false, message: "অর্ডারটি পাওয়া যায়নি।" },
         { status: 404 }
       );
     }

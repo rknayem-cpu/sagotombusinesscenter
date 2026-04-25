@@ -31,7 +31,7 @@ const itemsList = order.items
 
 // ২. QR Data স্ট্রিং তৈরি করা
 const qrData = `
-Order ID: ${order._id}
+Order ID: ${order.orderId}
 Date: ${new Date(order.createdAt).toLocaleDateString()}
 Items Detail:
 ${itemsList}
