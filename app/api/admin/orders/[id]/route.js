@@ -85,3 +85,33 @@ console.log("Recipient Email:", updatedOrder.user?.email);
     return NextResponse.json({ success: false, message: "Update failed" }, { status: 500 });
   }
 }
+
+// ... existing imports (Order, connectDB, etc.)
+
+export async function DELETE(req, { params }) {
+  try {
+    await connectDB();
+    const { id } = params;
+
+    const deletedOrder = await Order.findByIdAndDelete(id);
+
+    if (!deletedOrder) {
+      return NextResponse.json(
+        { success: false, message: "Order not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Order deleted successfully" 
+    });
+
+  } catch (error) {
+    console.error("Delete Error:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete order" },
+      { status: 500 }
+    );
+  }
+}
