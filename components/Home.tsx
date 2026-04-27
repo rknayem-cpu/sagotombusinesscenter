@@ -70,34 +70,7 @@ export default function Home() {
         </div>
       </div>
 <ProductDisplayPage />
-      {/* Product Showcase */}
-      <div className="max-w-6xl mb-16">
-        <div className="flex justify-between items-end mb-8 border-b border-slate-900 pb-2">
-          <h2 className="text-2xl font-bold uppercase italic">Product Showcase</h2>
-          <Link href="/seemore" className="text-blue-600 font-bold flex items-center gap-1 hover:underline text-sm mb-1">
-            See More Samples <FiArrowRight />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {productImages.map((img, i) => (
-            <div key={i} className="group relative overflow-hidden transition-all">
-              <div className="relative h-60 w-full overflow-hidden bg-slate-100 rounded-lg">
-                <img
-                  src={img}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  alt={`Showcase item ${i + 1}`}
-                />
-                <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="pt-4">
-                <p className="text-xs text-slate-400 font-bold uppercase mb-1">Printing Item</p>
-                <h3 className="text-lg font-bold">Premium Quality {i + 1}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+    
 
       {/* Video Section */}
       <div className="w-full max-w-4xl mx-auto border-t-2 border-green-500 pt-12 mb-16">
