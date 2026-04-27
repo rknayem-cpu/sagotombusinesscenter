@@ -4,8 +4,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiPrinter, FiAward, FiUserCheck, FiLayers, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
-
-
+import Scrollbar from '@/components/Scrollbar';
+import ProductDisplayPage from "@/components/Products";
 
 
 const productImages = [
@@ -14,12 +14,6 @@ const productImages = [
 "https://shorifart.com/wp-content/uploads/2024/06/18-1-scaled.jpg",
 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRccj3CORY3LDfGbTEL4zLo2XIXEq2Z71PRJ_uwJtaX7MmiqpgCoaReKsI&s=10"
 ]
-
-
-
-
-
-
 
 const services = [
   { icon: <FiUserCheck />, text: "পিভিসি আইডি কার্ড" },
@@ -41,20 +35,7 @@ export default function Home() {
         <p className="text-lg text-slate-500 font-medium">উন্নতমানের প্রিন্টিং আর দীর্ঘস্থায়ী নিশ্চয়তা।</p>
       </header>
 
-      {/* Infinite Seamless Scrolling */}
-      <div className="relative overflow-hidden py-6 border-y border-slate-100 mb-12">
-        <motion.div
-          className="flex gap-6 w-max"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
-        >
-          {[...productImages, ...productImages].map((img, i) => (
-            <div key={i} className="w-72 h-44 flex-shrink-0 border rounded-lg border-slate-200 p-1">
-              <img src={img} className="w-full rounded-lg h-full object-cover" alt={`Product ${i}`} />
-            </div>
-          ))}
-        </motion.div>
-      </div>
+    <Scrollbar />
 
       <div className="max-w-6xl grid md:grid-cols-2 gap-12 mb-16">
         {/* Services List */}
@@ -88,7 +69,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-
+<ProductDisplayPage />
       {/* Product Showcase */}
       <div className="max-w-6xl mb-16">
         <div className="flex justify-between items-end mb-8 border-b border-slate-900 pb-2">
@@ -134,10 +115,10 @@ export default function Home() {
       {/* Status Counter Section */}
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 py-10 text-black border-t border-slate-100">
         {[
-          { label: "হ্যাপি ক্লায়েন্ট", value: "৫০০+", icon: <FiUserCheck className="text-green-500" /> },
+          { label: "হ্যাপি ক্লায়েন্ট", value: "১০০+", icon: <FiUserCheck className="text-green-500" /> },
           { label: "আইডি কার্ড ডেলিভারি", value: "১০০০+", icon: <FiLayers className="text-blue-500" /> },
           { label: "প্রিন্টিং আইটেম", value: "৫০+", icon: <FiPrinter className="text-purple-500" /> },
-          { label: "সফল বছর", value: "১০+", icon: <FiAward className="text-yellow-500" /> }
+          { label: "সফল বছর", value: "১.৫+", icon: <FiAward className="text-yellow-500" /> }
         ].map((stat, index) => (
           <div key={index} className="flex flex-col items-center text-center space-y-2">
             <div className="text-4xl mb-2">{stat.icon}</div>

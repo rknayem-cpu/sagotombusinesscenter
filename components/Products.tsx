@@ -84,28 +84,42 @@ export default function ProductDisplayPage() {
   // --- LOADING STATE (SKELETON) ---
   if (loading) return (
     <SkeletonTheme baseColor="#e2e8f0" highlightColor="#f1f5f9">
-      <div className="max-w-7xl mx-auto mt-12 py-12 px-4">
-        <header className="mb-10">
-          <Skeleton width={200} height={40} className="mb-2" />
-          <Skeleton width={150} height={20} />
-        </header>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="rounded-xl border border-slate-100 p-2">
-              <Skeleton height={200} borderRadius={12} />
-              <div className="mt-4 space-y-2">
-                <Skeleton width="40%" />
-                <Skeleton width="90%" height={20} />
-                <div className="flex justify-between mt-4">
-                  <Skeleton width={50} height={25} />
-                  <Skeleton width={40} height={40} borderRadius={8} />
-                </div>
+  <div className="max-w-7xl mx-auto mt-12 py-12 px-4">
+    <header className="mb-10">
+      {/* maxWidth এরর ফিক্স করা হয়েছে className এর মাধ্যমে */}
+      <div className="max-w-[200px] mb-2">
+        <Skeleton height={40} width="100%" />
+      </div>
+      <div className="max-w-[150px]">
+        <Skeleton height={20} width="100%" />
+      </div>
+    </header>
+
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+        <div key={i} className="rounded-xl border border-slate-100 p-2 overflow-hidden">
+          
+          {/* Responsive aspect ratio image skeleton */}
+          <div className="w-full aspect-square md:aspect-[4/3] overflow-hidden rounded-xl">
+             <Skeleton height="100%" width="100%" containerClassName="flex-1" />
+          </div>
+
+          <div className="mt-4 space-y-2">
+            <Skeleton width="40%" />
+            <Skeleton width="90%" height={20} />
+            
+            <div className="flex justify-between items-center mt-4">
+              <Skeleton width={50} height={25} />
+              <div className="w-8 h-8 md:w-10 md:h-10">
+                <Skeleton circle height="100%" width="100%" />
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </SkeletonTheme>
+      ))}
+    </div>
+  </div>
+</SkeletonTheme>
   );
 
   return (
