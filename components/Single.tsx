@@ -6,6 +6,7 @@ import { ShoppingBag, ArrowLeft, Star, ShieldCheck, Truck, Loader2 } from 'lucid
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Swal from 'sweetalert2';
+import * as fbq from '@/lib/fpixel';
 
 interface Product {
   _id: string; 
@@ -77,6 +78,14 @@ export default function SingleProductPage() {
 
       // 3. LocalStorage e save kora
       localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+       fbq.event('AddToCart', {
+              content_ids: [product._id],
+              content_name: product.title,
+              content_type: 'product',
+              value: product.price,
+              currency: 'BDT'
+            });
 
       // 4. Navbar update korar jonno event trigger kora
       window.dispatchEvent(new Event('cartUpdated'));

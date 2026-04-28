@@ -21,9 +21,10 @@ export default function CheckoutPage() {
     const parsedData = JSON.parse(savedData);
     setOrderData(parsedData);
 
+   
     // --- FACEBOOK PIXEL: InitiateCheckout START ---
     fbq.event('InitiateCheckout', {
-      content_ids: parsedData.items.map((item: any) => item._id), // চেকআউটে থাকা সব প্রোডাক্টের আইডি
+      content_ids: parsedData.items.map((item: any) => item.id), // চেকআউটে থাকা সব প্রোডাক্টের আইডি
       content_type: 'product',
       value: parsedData.totalAmount, // মোট টাকার পরিমাণ
       currency: 'BDT',
@@ -65,11 +66,11 @@ export default function CheckoutPage() {
         value: orderData.totalAmount,
         currency: 'BDT',
         content_type: 'product',
-        content_ids: orderData.items.map((item: any) => item._id), // সব প্রোডাক্টের আইডি
+        content_ids: orderData.items.map((item: any) => item.id), // সব প্রোডাক্টের আইডি
         num_items: orderData.items.length,
       });
 
-      // --- অর্ডার সাকসেস হলে সব ক্লিয়ার করা ---
+      // --- অর্ডার সাকসেস হলে সব ক্লিয়ার করা ---
       localStorage.removeItem('pendingOrder'); 
       localStorage.removeItem('cart'); 
       
