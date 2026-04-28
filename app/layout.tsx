@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import FacebookPixelEvents from "@/components/FacebookPixelEvents";
 import Wh from '@/components/Wh';
 import Script from 'next/script'
 export const metadata: Metadata = {
@@ -19,7 +20,6 @@ export default function RootLayout({
 
 <html lang="bn" suppressHydrationWarning>
   
-<head>
   <Script
           id="fb-pixel"
           strategy="afterInteractive"
@@ -33,15 +33,16 @@ export default function RootLayout({
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}');
-             fbq('init', '886318208801277');
+              fbq('init', '1558611425492637');
+            
               fbq('track', 'PageView');
             `,
           }}
         />
-</head>
+
   
   <body suppressHydrationWarning>
+    <FacebookPixelEvents />
   <Navbar />
     {children}
     <Wh />

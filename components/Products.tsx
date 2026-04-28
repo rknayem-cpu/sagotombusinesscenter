@@ -1,5 +1,5 @@
 "use client";
-
+import * as fbq from '@/lib/fpixel';
 import React, { useEffect, useState } from 'react';
 import { Loader2, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
@@ -60,6 +60,15 @@ export default function ProductDisplayPage() {
 
       // 3. Save back to LocalStorage
       localStorage.setItem('cart', JSON.stringify(existingCart));
+
+      // --- FACEBOOK PIXEL TRACKING START ---
+   fbq.event('AddToCart', {
+        content_ids: [product._id],
+        content_name: product.title,
+        content_type: 'product',
+        value: product.price,
+        currency: 'BDT'
+      });
 
       // 4. Dispatch custom event jate Navbar update hoy
       window.dispatchEvent(new Event('cartUpdated'));

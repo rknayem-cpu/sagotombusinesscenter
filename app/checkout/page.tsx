@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import * as fbq from '@/lib/fpixel';
 import { useRouter } from 'next/navigation';
 import { MapPin, Phone, CreditCard, Loader2, ShoppingBag, ArrowLeft, User } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -10,61 +11,88 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: '', mobile: '', address: '' });
 
-  useEffect(() => {
-    // LocalStorage theke 'pendingOrder' check korchi
-    const savedData = localStorage.getItem('pendingOrder');
-    if (!savedData) {
-      router.push('/cart');
-    } else {
-      setOrderData(JSON.parse(savedData));
-    }
-  }, [router]);
+ useEffect(() => {
+  // ১. LocalStorage থেকে ডাটা চেক করা
+  const savedData = localStorage.getItem('pendingOrder');
+  
+  if (!savedData) {
+    router.push('/cart');
+  } else {
+    const parsedData = JSON.parse(savedData);
+    setOrderData(parsedData);
+
+    // --- FACEBOOK PIXEL: InitiateCheckout START ---
+    fbq.event('InitiateCheckout', {
+      content_ids: parsedData.items.map((item: any) => item._id), // চেকআউটে থাকা সব প্রোডাক্টের আইডি
+      content_type: 'product',
+      value: parsedData.totalAmount, // মোট টাকার পরিমাণ
+      currency: 'BDT',
+      num_items: parsedData.items.length // কয়টি আইটেম আছে
+    });
+    // --- FACEBOOK PIXEL: InitiateCheckout END ---
+  }
+}, [router]);
+
+
+
+
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.mobile || !formData.address) {
-      return Swal.fire("Missing Info", "Please fill all the fields", "warning");
-    }
+  e.preventDefault();
+  
+  if (!formData.name || !formData.mobile || !formData.address) {
+    return Swal.fire("Missing Info", "Please fill all the fields", "warning");
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch('/api/orders/place', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: orderData.items,
-          totalAmount: orderData.totalAmount,
-          customerInfo: formData,
-          // Jodi user login thake, tobe backend eita handle korbe session theke, 
-          // na thakle eita ekta 'Guest Order' hisebe count hobe.
-        })
+  setLoading(true);
+  try {
+    const res = await fetch('/api/orders/place', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        customerInfo: formData,
+      })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      
+      // --- FACEBOOK PIXEL PURCHASE TRACKING ---
+      fbq.event('Purchase', {
+        value: orderData.totalAmount,
+        currency: 'BDT',
+        content_type: 'product',
+        content_ids: orderData.items.map((item: any) => item._id), // সব প্রোডাক্টের আইডি
+        num_items: orderData.items.length,
       });
 
-      const result = await res.json();
-
-      if (result.success) {
-        // --- IMPORTANT: Order success hole sob clear kora ---
-        localStorage.removeItem('pendingOrder'); 
-        localStorage.removeItem('cart'); // Main cart-o khali kore dilam
-        
-        window.dispatchEvent(new Event('cartUpdated')); 
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'অর্ডার সফল হয়েছে!',
-          text: 'আপনার অর্ডারটি আমরা পেয়েছি।',
-          confirmButtonColor: '#ea580c'
-        }).then(() => router.push(`/ordered/${result.orderId}`)); 
-      } else {
-          throw new Error(result.message);
-      }
-    } catch (err) {
-      Swal.fire("Error", "অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।", "error");
-    } finally {
-      setLoading(false);
+      // --- অর্ডার সাকসেস হলে সব ক্লিয়ার করা ---
+      localStorage.removeItem('pendingOrder'); 
+      localStorage.removeItem('cart'); 
+      
+      window.dispatchEvent(new Event('cartUpdated')); 
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'অর্ডার সফল হয়েছে!',
+        text: 'আপনার অর্ডারটি আমরা পেয়েছি।',
+        confirmButtonColor: '#ea580c'
+      }).then(() => router.push(`/ordered/${result.orderId}`)); 
+    } else {
+        throw new Error(result.message);
     }
-  };
+  } catch (err) {
+    Swal.fire("Error", "অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   if (!orderData) return <div className="min-h-screen bg-white" />;
 
