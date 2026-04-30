@@ -161,7 +161,7 @@ export default function CheckoutPage() {
 
               <div className="pt-4">
                 <button disabled={loading}
-                 type='button'
+                 type='submit'
 
                   aria-label="Confirm Order" // Meta/FB robot-er jonno khub important
                   title="Confirm Order"
