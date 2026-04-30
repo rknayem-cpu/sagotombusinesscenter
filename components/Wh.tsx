@@ -35,7 +35,9 @@ export default function Wh() {
             border-white/20 shadow-2xl rounded-full p-1.5 md:p-2"
           >
             {/* WhatsApp Icon Wrapper */}
-            <div className="bg-gradient-to-tr from-[#25D366] to-[#128C7E] p-3 md:p-3 rounded-full shadow-md group-hover:rotate-[360deg] transition-transform duration-1000 ease-in-out">
+            <div className="bg-gradient-to-tr from-[#25D366] to-[#128C7E] p-3 md:p-3 
+            rounded-full shadow-md group-hover:rotate-[360deg]
+            transition-transform duration-1000 ease-in-out">
               <FaWhatsapp className="text-white text-2xl md:text-3xl" />
             </div>
 

@@ -9,10 +9,10 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 interface Product {
-  _id: string; 
-  title: string; 
-  price: number; 
-  imgUrl: string; 
+  _id: string;
+  title: string;
+  price: number;
+  imgUrl: string;
   category: string;
 }
 
@@ -36,6 +36,35 @@ export default function ProductDisplayPage() {
     };
     fetchData();
   }, []);
+
+
+  const handleDirectOrder = (product: Product) => {
+    try {
+      // ১. Single product object-ti localstorage-e rakha
+      const orderData = {
+        ...product,
+        quantity: 1
+      };
+
+      // amra "direct_checkout" nam e save korchi jate cart empty na koreo order kora jay
+      localStorage.setItem('direct_checkout', JSON.stringify(orderData));
+
+      // ২. Facebook Pixel Tracking (InitiateCheckout)
+      fbq.event('InitiateCheckout', {
+        content_ids: [product._id],
+        content_name: product.title,
+        value: product.price,
+        currency: 'BDT'
+      });
+
+      // ৩. Checkout page-e pathiye deya
+      router.push('/checkout?source=direct');
+
+    } catch (error) {
+      console.error("Order error:", error);
+    }
+  };
+
 
   const handleCartAction = (product: Product) => {
     setAddingId(product._id);
@@ -62,7 +91,7 @@ export default function ProductDisplayPage() {
       localStorage.setItem('cart', JSON.stringify(existingCart));
 
       // --- FACEBOOK PIXEL TRACKING START ---
-   fbq.event('AddToCart', {
+      fbq.event('AddToCart', {
         content_ids: [product._id],
         content_name: product.title,
         content_type: 'product',
@@ -93,42 +122,42 @@ export default function ProductDisplayPage() {
   // --- LOADING STATE (SKELETON) ---
   if (loading) return (
     <SkeletonTheme baseColor="#e2e8f0" highlightColor="#f1f5f9">
-  <div className="max-w-7xl mx-auto mt-12 py-12 px-4">
-    <header className="mb-10">
-      {/* maxWidth এরর ফিক্স করা হয়েছে className এর মাধ্যমে */}
-      <div className="max-w-[200px] mb-2">
-        <Skeleton height={40} width="100%" />
-      </div>
-      <div className="max-w-[150px]">
-        <Skeleton height={20} width="100%" />
-      </div>
-    </header>
-
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="rounded-xl border border-slate-100 p-2 overflow-hidden">
-          
-          {/* Responsive aspect ratio image skeleton */}
-          <div className="w-full aspect-square md:aspect-[4/3] overflow-hidden rounded-xl">
-             <Skeleton height="100%" width="100%" containerClassName="flex-1" />
+      <div className="max-w-7xl mx-auto mt-12 py-12 px-4">
+        <header className="mb-10">
+          {/* maxWidth এরর ফিক্স করা হয়েছে className এর মাধ্যমে */}
+          <div className="max-w-[200px] mb-2">
+            <Skeleton height={40} width="100%" />
           </div>
+          <div className="max-w-[150px]">
+            <Skeleton height={20} width="100%" />
+          </div>
+        </header>
 
-          <div className="mt-4 space-y-2">
-            <Skeleton width="40%" />
-            <Skeleton width="90%" height={20} />
-            
-            <div className="flex justify-between items-center mt-4">
-              <Skeleton width={50} height={25} />
-              <div className="w-8 h-8 md:w-10 md:h-10">
-                <Skeleton circle height="100%" width="100%" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="rounded-xl border border-slate-100 p-2 overflow-hidden">
+
+              {/* Responsive aspect ratio image skeleton */}
+              <div className="w-full aspect-square md:aspect-[4/3] overflow-hidden rounded-xl">
+                <Skeleton height="100%" width="100%" containerClassName="flex-1" />
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <Skeleton width="40%" />
+                <Skeleton width="90%" height={20} />
+
+                <div className="flex justify-between items-center mt-4">
+                  <Skeleton width={50} height={25} />
+                  <div className="w-8 h-8 md:w-10 md:h-10">
+                    <Skeleton circle height="100%" width="100%" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</SkeletonTheme>
+      </div>
+    </SkeletonTheme>
   );
 
   return (
@@ -144,12 +173,12 @@ export default function ProductDisplayPage() {
         {products.map((p) => (
           <div key={p._id} className="group bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all">
             <div className="relative aspect-square md:aspect-[5/4] overflow-hidden bg-gray-50 flex items-center justify-center">
-              <img 
-                src={p.imgUrl} 
-                alt={p.title} 
-                className="md:w-[75%] w-[90%] h-auto transition-transform duration-500 group-hover:scale-110" 
+              <img
+                src={p.imgUrl}
+                alt={p.title}
+                className="md:w-[75%] w-[90%] h-auto transition-transform duration-500 group-hover:scale-110"
               />
-              <div 
+              <div
                 onClick={() => router.push(`/products/${p._id}`)}
                 className="absolute inset-0 bg-black/5 cursor-pointer"
               />
@@ -157,18 +186,46 @@ export default function ProductDisplayPage() {
 
             {/* Content Section */}
             <div className="p-2 md:p-3">
-              <p className="text-[9px] text-orange-600 font-bold uppercase mb-0.5">{p.category}</p>
-              <h3 className="text-xs md:text-sm font-bold text-gray-800 truncate mb-2">{p.title}</h3>
-              
-              <div className="flex items-center justify-between gap-1">
-                <p className="text-sm md:text-lg font-black text-gray-950">৳{p.price}</p>
-                <button 
-                  onClick={() => handleCartAction(p)}
-                  className="bg-black text-white w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-orange-600 active:scale-90 transition-all"
-                >
-                  {addingId === p._id ? <Loader2 size={14} className="animate-spin" /> : <ShoppingCart size={16} />}
-                </button>
-              </div>
+              <p className="text-[14px] text-orange-600 font-bold uppercase mb-0.5">{p.category}</p>
+              <hr className='w-full border-b-[1px] border-green-500'/>
+              <h3 className="text-xs md:text-sm font-bold text-gray-800 truncate mb-0 mt-1">{p.title}</h3>
+
+              <div className="mt-0 space-y-1">
+  {/* Price Section - Full Width and Bold */}
+  <div className="flex items-baseline gap-1">
+    <span className="text-sm md:text-lg font-black text-gray-950">৳{p.price}</span>
+    
+  </div>
+
+  {/* Actions Row */}
+  <div className="flex items-center gap-2">
+    {/* Order Now Button - Primary Action */}
+    <button
+      type="button"
+      aria-label="Order now"
+      title="Order now"
+      onClick={() => handleDirectOrder(p)}
+      className="flex-[4] bg-orange-600 text-white py-1.5 md:py-1.5 text-[14px] md:text-lg font-black rounded-xl hover:bg-black active:scale-95 transition-all uppercase tracking-tighter shadow-md shadow-orange-100 flex items-center justify-center gap-2"
+    >
+      অর্ডার করুন
+    </button>
+
+    {/* Cart Button - Secondary Action */}
+    <button
+      type="button"
+      aria-label="Add to cart"
+      title="Add to cart"
+      onClick={() => handleCartAction(p)}
+      className="flex-1 bg-gray-100 text-gray-900 h-[38px] md:h-[44px] flex items-center justify-center rounded-xl hover:bg-black hover:text-white active:scale-90 transition-all border border-transparent hover:border-black"
+    >
+      {addingId === p._id ? (
+        <Loader2 size={16} className="animate-spin" />
+      ) : (
+        <ShoppingCart size={18} />
+      )}
+    </button>
+  </div>
+</div>
             </div>
           </div>
         ))}

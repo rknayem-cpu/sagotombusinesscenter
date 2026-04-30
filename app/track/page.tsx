@@ -115,7 +115,7 @@ export default function PublicOrderTracking() {
                           )}
                         </div>
                         <p className={`text-xs mt-1 ${isActive ? "text-gray-500" : "text-gray-200"}`}>
-                          {isActive ? "কাজ সম্পন্ন হয়েছে বা হচ্ছে" : "অপেক্ষা করুন"}
+                          {isActive ? "কাজ সম্পন্ন হয়েছে" : "অপেক্ষা করুন"}
                         </p>
                       </div>
                     </div>

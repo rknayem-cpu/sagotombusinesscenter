@@ -32,6 +32,36 @@ export default function CategoryProductPage() {
 
   const categories = Array.from(new Set(products.map(p => p.category)));
 
+
+ const handleDirectOrder = (product: Product) => {
+    try {
+      // ১. Single product object-ti localstorage-e rakha
+      const orderData = {
+        ...product,
+        quantity: 1
+      };
+
+      // amra "direct_checkout" nam e save korchi jate cart empty na koreo order kora jay
+      localStorage.setItem('direct_checkout', JSON.stringify(orderData));
+
+      // ২. Facebook Pixel Tracking (InitiateCheckout)
+      fbq.event('InitiateCheckout', {
+        content_ids: [product._id],
+        content_name: product.title,
+        value: product.price,
+        currency: 'BDT'
+      });
+
+      // ৩. Checkout page-e pathiye deya
+      router.push('/checkout?source=direct');
+
+    } catch (error) {
+      console.error("Order error:", error);
+    }
+  };
+
+
+
   const handleAddToCart = (product: Product) => {
     setAddingId(product._id);
     try {
@@ -128,23 +158,44 @@ export default function CategoryProductPage() {
                   </div>
 
                   {/* Info Section */}
-                  <div className="mt-3 flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-xs font-semibold text-gray-700 truncate uppercase">
-                        {p.title}
-                      </h3>
-                      <p className="text-sm font-black text-gray-900 mt-1">৳{p.price}</p>
-                    </div>
+                  <div className="mt-3 space-y-3">
+  {/* Title and Price Section */}
+  <div className="min-w-0">
+    <h3 className="text-[15px] md:text-md font-bold text-gray-700 truncate uppercase tracking-tight">
+      {p.title}
+    </h3>
+    <p className="text-sm md:text-base font-black text-gray-900 mt-0.5">৳{p.price}</p>
+  </div>
 
-                    {/* Cart Button Right Side */}
-                    <button 
-                      onClick={() => handleAddToCart(p)}
-                      disabled={addingId === p._id}
-                      className="bg-gray-100 text-gray-900 p-2 rounded-md hover:bg-orange-600 hover:text-white transition-colors"
-                    >
-                      {addingId === p._id ? <Loader2 size={16} className="animate-spin" /> : <ShoppingCart size={16} />}
-                    </button>
-                  </div>
+  {/* Actions: Buttons Section */}
+  <div className="flex items-center gap-2">
+    {/* Buy Now Button - Takes more space */}
+    <button
+      type="button"
+      aria-label="Order now"
+      title="Order now"
+      onClick={() => handleDirectOrder(p)}
+      className="flex-[3] bg-orange-600 text-white py-1.5 md:py-1.5 text-[14px] md:text-lg font-black rounded-xl hover:bg-black active:scale-95 transition-all uppercase tracking-wider"
+    >
+      অর্ডার করুন
+    </button>
+
+    {/* Cart Icon Button - Compact and Square */}
+    <button 
+      type="button"
+      aria-label="Add to cart"
+      onClick={() => handleAddToCart(p)}
+      disabled={addingId === p._id}
+      className="flex-1 bg-gray-100 text-gray-900 h-[36px] md:h-[40px] flex items-center justify-center rounded-xl hover:bg-black hover:text-white active:scale-90 transition-all disabled:opacity-50"
+    >
+      {addingId === p._id ? (
+        <Loader2 size={16} className="animate-spin" />
+      ) : (
+        <ShoppingCart size={18} />
+      )}
+    </button>
+  </div>
+</div>
                 </div>
               ))}
           </div>
