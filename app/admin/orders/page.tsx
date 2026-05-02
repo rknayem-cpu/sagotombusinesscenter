@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 interface Order {
   _id: string;
   phone: string;
+  name: string;
+  orderId: string;
   totalAmount: number;
   status: string;
   shippingAddress: string;
@@ -131,8 +133,8 @@ export default function AdminOrdersPage() {
           {filteredOrders.map((order) => (
             <div key={order._id} className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 shadow-sm flex flex-col hover:border-orange-300 transition-all group">
               
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-black text-gray-300 font-mono tracking-tighter uppercase">ID: {order._id.slice(-10)}</span>
+              <div className="flex justify-between items-start mb-1">
+                <span className="text-[12px] font-black text-gray-300 font-mono tracking-tighter uppercase">ID: {order.orderId}</span>
                 <span className={`text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest ${
                   order.status === 'Delivered' ? 'bg-green-50 text-green-600' : 
                   order.status === 'Shipped' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'
@@ -142,9 +144,10 @@ export default function AdminOrdersPage() {
               </div>
 
               <div className="mb-4">
+                <p className="text-md  text-gray-900 mb-1">নাম: {order.name}</p>
                 <p className="text-xl font-black text-gray-900 leading-none tracking-tight">{order.phone}</p>
-                <p className="text-[11px] text-gray-400 mt-2 truncate font-bold uppercase flex items-center gap-1">
-                  <MapPin size={12} className="text-orange-500" /> {order.shippingAddress}
+                <p className="text-[14px] text-gray-400 mt-2 truncate font-bold uppercase flex items-center gap-1">
+                  <MapPin size={17} className="text-orange-500" /> {order.shippingAddress}
                 </p>
               </div>
 

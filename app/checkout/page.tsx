@@ -128,7 +128,16 @@ export default function CheckoutPage() {
         <button onClick={() => router.back()} className="mb-8 flex items-center gap-2 text-xs font-black text-gray-400 hover:text-black transition tracking-widest uppercase">
           <ArrowLeft size={16} /> Back
         </button>
-
+<div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 text-md rounded">
+  অর্ডার করার নিয়মাবলীঃ 
+অর্ডার করা শেষ হলে ওয়েবসাইটের ডানপাশের হোয়াটসআপ বাটনে ক্লিক করে আমাদের হোয়াটসআপে আপনার ডিজাইনটা দিবেন,
+এনআইডি কার্ড বা ড্রাইভিং লাইসেন্স এর ক্ষেত্রে 
+পিডিএফ দিবেন,  পিডিএফ দিলে সবচেয়ে ভাল হবে। 
+পিডিএফ না থাকলে পরিষ্কার ছবি তুলে দিবেন।
+তারপর ডিজাইন পাওয়ার পর আমরা আপনার পন্যটি প্রিন্ট করে পাঠাবো।
+গেনজি বা ক্রেস্ট অর্ডারের ক্ষেত্রেও  একইভাবে অর্ডার করা শেষ হলে 
+ওয়েবসাইটের ডানপাশের হোয়াটসআপ বাটনে ক্লিক করে আমাদের হোয়াটসআপে আপনার ডিজাইনটা দিবেন। 
+</div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Shipping Form */}
